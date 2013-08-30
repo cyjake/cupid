@@ -35,9 +35,10 @@ Venus project named itself venus possibly because of planet venus, as we can tel
 from the names of those venus based sites. The rest names of planets in our solar
 system are not as interesting though. Mars and Mercury are taken. Saturn and
 Jupiter might be available. Uranus and Neptune are not as famous. And no one shall
-name his project earth. That'll make him godly, right?
+name his project Earth. That'll make him godly, right?
 
 The point is, this project, as an alternative of veuns, won't have ambitions as
 big as venus. Both the codebase and mission are all quite smaller.
 
-We just want to serve [Planet Alibaba](http://planet.alibaba-inc.com) well.
+We just want to serve [Planet Alibaba](http://planet.alibaba-inc.com) well. And
+make sure we are having fun while maintaining it.
