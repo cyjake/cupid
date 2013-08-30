@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+
+var cupid = require('../')
+var utils = require('../lib/utils')
+
+
+process.stdin.resume()
+
+cupid.build('alibaba')
+  // .fail(function(err) { utils.error(err) })
+  .done(function(msg) {
+    utils.log('done', msg)
+    process.exit(0)
+  })

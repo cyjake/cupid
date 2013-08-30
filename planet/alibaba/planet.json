@@ -1,0 +1,19 @@
+{
+  "title": "Planet Alibaba",
+  "feeds": [{
+    "link": "http://feed.cnblogs.com/blog/u/102213/rss",
+    "nickname": "ketuo"
+  }, {
+    "link": "http://jser.me/rss.xml",
+    "nickname": "hubo"
+  }, {
+    "link": "http://cyj.me/feed/atom.xml",
+    "nickname": "yicai"
+  }, {
+    "link": "http://nuysoft.com/rss.xml",
+    "nickname": "mozhi"
+  }, {
+    "link": "http://yehao.diandian.com/rss",
+    "nickname": "lingzheng"
+  }]
+}

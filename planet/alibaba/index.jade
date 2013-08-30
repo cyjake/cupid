@@ -1,0 +1,32 @@
+doctype 5
+html(lang='en')
+  head
+    meta(charset="utf-8")
+    title= title
+    link(rel="stylesheet", type="text/css", href="http://g.tbcdn.cn/thx/cube/1.0.3/neat.css")
+    link(rel="stylesheet", type="text/css", href="planet.css")
+    link(rel="stylesheet", type="text/css", href="solarized-light.css")
+  body
+    nav
+      a(href='http://ux.etao.com') MUX
+      ul
+        for feed in feeds
+          li
+            a(href="#{feed.site}")
+              i.iconfont &#483;
+              | !{feed.title}
+    div.main
+      for post in posts
+        section
+          div.author
+            address
+              a(href="#{post.author.link}")
+                img(src="#{post.author.gravatar}")
+              a(href="#{post.author.link}")
+                span.name= post.author.name
+              a(href="#{post.link}")
+                time(datetime="#{post.updated.format()}")= post.updated.fromNow()
+          article
+            h1
+              a(href="#{post.link}")= post.title
+            | !{post.content}
