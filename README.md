@@ -29,7 +29,7 @@ Writing JavaScript is fun. Use morden tools like NPM is a bless. And JavaScript
 community have done quite a lot of work. Most of the modules required for developing
 an feed aggregator can be found in NPM registry.
 
-But why the name, whe Cupid?
+But why the name, why Cupid?
 
 Venus project named itself venus possibly because of planet venus, as we can tell
 from the names of those venus based sites. The rest names of planets in our solar
