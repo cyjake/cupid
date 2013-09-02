@@ -20,7 +20,7 @@ Or simpliy
 ```bash
 $ npm install cupid -g
 $ cupid alibaba
-$ cupid alibaba
+$ cupid server alibaba
 ```
 
 Or if you want to build your own:
