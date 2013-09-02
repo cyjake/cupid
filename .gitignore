@@ -2,3 +2,4 @@
 node_modules
 
 planet/**/*.html
+planet/**/*.xml

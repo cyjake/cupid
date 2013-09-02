@@ -3,50 +3,48 @@ var cheerio = require('cheerio')
 var path = require('path')
 var fs = require('fs')
 var moment = require('moment')
+var han = require('han')
 
 require('should')
 
 
 // for quicker test driven development, this test is comment out temperarily.
-//
-// describe('.read', function() {
-//   var data = require('../planet/alibaba/planet.json')
-//   var feeds
 
-//   before(function(done) {
-//     this.timeout(60000)
-//     cupid.read(data.feeds)
-//       .then(function(_feeds) {
-//         feeds = _feeds
-//         done()
-//       })
-//       .done()
-//   })
+describe('.read', function() {
+  var data = require('../planet/alibaba/planet.json')
+  var feeds
 
-//   it('should keep parsed xml object', function() {
-//     feeds.forEach(function(result, i) {
-//       var feed = result.value
-//       var fpath = path.join(__dirname, 'fixtures', feed.nickname + '.json')
+  before(function(done) {
+    this.timeout(60000)
+    cupid.read(data.feeds)
+      .then(function(_feeds) {
+        feeds = _feeds
+        done()
+      })
+      .done()
+  })
 
-//       fs.writeFileSync(fpath, JSON.stringify(feed.data, null, '  '))
-//     })
-//   })
+  it('should keep parsed xml object', function() {
+    feeds.forEach(function(feed, i) {
+      var fpath = path.join(__dirname, 'fixtures', han.letter(feed.nickname) + '.json')
 
-//   it('should match number of links in planet.json', function() {
-//     feeds.length.should.equal(3)
-//   })
-// })
+      fs.writeFileSync(fpath, JSON.stringify(feed.data, null, '  '))
+    })
+  })
+
+  it('should match number of links in planet.json', function() {
+    feeds.length.should.equal(7)
+  })
+})
 
 describe('.unifyRSS', function() {
   var feed
 
   before(function() {
     feed = cupid.unify({
-      value: {
-        data: require('./fixtures/mozhi.json'),
-        link: 'http://nuysoft.com/rss.xml',
-        author: 'nuysoft <nuysoft@gmail.com>'
-      }
+      data: require('./fixtures/mozhi.json'),
+      link: 'http://nuysoft.com/rss.xml',
+      author: 'nuysoft <nuysoft@gmail.com>'
     })
   })
 
@@ -72,10 +70,8 @@ describe('.unifyAtom', function() {
 
   before(function() {
     feed = cupid.unify({
-      value: {
-        data: require('./fixtures/yicai.json'),
-        link: 'http://cyj.me/feed/atom.xml'
-      }
+      data: require('./fixtures/yicai.json'),
+      link: 'http://cyj.me/feed/atom.xml'
     })
   })
 
@@ -107,11 +103,9 @@ describe('.normalize', function() {
 
   before(function() {
     feed = cupid.unify({
-      value: {
-        data: require('./fixtures/yicai.json'),
-        link: 'http://cyj.me/feed/atom.xml',
-        author: 'Chen Yicai <yicai.cyj@taobao.com>'
-      }
+      data: require('./fixtures/yicai.json'),
+      link: 'http://cyj.me/feed/atom.xml',
+      author: 'Chen Yicai <yicai.cyj@taobao.com>'
     })
     feed = cupid.normalize(feed)
     $ = cheerio.load(feed.entry[0].content)
@@ -144,7 +138,7 @@ describe('.aggregate', function() {
     }]
 
     feeds = feeds.map(function(feed) {
-      return cupid.unify({ value: feed })
+      return cupid.unify(feed)
     })
 
     posts = cupid.aggregate(feeds)
@@ -162,6 +156,7 @@ describe('.write', function() {
   before(function() {
     var data = {
       title: "Planet Cupid",
+      site: "http://planet.alibaba-inc.com",
       feeds: [{
         data: require('./fixtures/mozhi.json'),
         link: 'http://nuysoft.com/rss.xml',
@@ -173,7 +168,7 @@ describe('.write', function() {
     }
 
     feeds = data.feeds.map(function(feed) {
-      var feed = cupid.unify({ value: feed })
+      var feed = cupid.unify(feed)
 
       return cupid.normalize(feed)
     })
@@ -181,15 +176,20 @@ describe('.write', function() {
     data.posts = cupid.aggregate(feeds)
     cupid.write(data)
 
-    fpath = path.join(__dirname, '../planet/alibaba/index.html')
+    htmlPath = path.join(__dirname, '../planet/alibaba/index.html')
+    atomPath = path.join(__dirname, '../planet/alibaba/atom.xml')
   })
 
   it('should write down index.html', function() {
-    fs.existsSync(fpath).should.be.true
+    fs.existsSync(htmlPath).should.be.true
+  })
+
+  it('should write down atom.xml', function() {
+    fs.existsSync(atomPath).should.be.true
   })
 
   it('should order posts by updated at', function() {
-    var $ = cheerio.load(fs.readFileSync(fpath, 'utf-8'))
+    var $ = cheerio.load(fs.readFileSync(htmlPath, 'utf-8'))
 
     var updated = $('section').map(function(section) {
       return moment($(section).find('time').attr('datetime'))

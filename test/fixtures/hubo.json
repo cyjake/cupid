@@ -1,0 +1,445 @@
+{
+  "rss": {
+    "$": {
+      "xmlns:dc": "http://purl.org/dc/elements/1.1/",
+      "version": "2.0"
+    },
+    "channel": [
+      {
+        "title": [
+          "草依山的Javascript世界 "
+        ],
+        "image": [
+          {
+            "link": [
+              "http://jser.me"
+            ],
+            "url": [
+              "http://jser.me/images/logo.png"
+            ]
+          }
+        ],
+        "link": [
+          "http://jser.me"
+        ],
+        "description": [
+          ""
+        ],
+        "language": [
+          "zh-cn"
+        ],
+        "generator": [
+          "http://jser.me"
+        ],
+        "ttl": [
+          "5"
+        ],
+        "copyright": [
+          "Copyright &copy; jser.me"
+        ],
+        "item": [
+          {
+            "title": [
+              "karma下测试异步载入的js文件 "
+            ],
+            "link": [
+              "http://jser.me/2013/08/21/karma%E4%B8%8B%E6%B5%8B%E8%AF%95%E5%BC%82%E6%AD%A5%E8%BD%BD%E5%85%A5%E7%9A%84js%E6%96%87%E4%BB%B6.html"
+            ],
+            "guid": [
+              "http://jser.me/2013/08/21/karma下测试异步载入的js文件"
+            ],
+            "pubDate": [
+              "Wed, 21 Aug 2013 00:00:00 -0700"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<p>默认情况下<a href=\"http://karma-runner.github.io/\">karma</a>是把所有的需要测试文件载入到测试页面，如果我们要对一个jsonp方法或者一个模块载入方法进行测试，它会给出一个找不到文件的提示，原因是karma的本地服务器会把需要测试的文件放在<code>/base/*</code>下，这个搞起来也很方便, 两步就搞定</p>\n\n<ul>\n<li>设置karma的conf文件里的<code>files</code></li>\n<li>对需要测试的方法进行mock，如果是本地请求路径，加上<code>/base/</code></li>\n</ul>\n\n<h2>需要测试的方法</h2>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\">    <span class=\"kd\">function</span> <span class=\"nx\">loadScript</span> <span class=\"p\">(</span><span class=\"nx\">url</span><span class=\"p\">,</span> <span class=\"nx\">success</span><span class=\"p\">,</span> <span class=\"nx\">charset</span><span class=\"p\">)</span> <span class=\"p\">{</span>\n        <span class=\"kd\">var</span> <span class=\"nx\">node</span> <span class=\"o\">=</span> <span class=\"nx\">doc</span><span class=\"p\">.</span><span class=\"nx\">createElement</span><span class=\"p\">(</span><span class=\"s1\">&#39;script&#39;</span><span class=\"p\">);</span>\n\n        <span class=\"k\">if</span> <span class=\"p\">(</span><span class=\"nx\">charset</span><span class=\"p\">)</span> <span class=\"p\">{</span>\n            <span class=\"nx\">node</span><span class=\"p\">.</span><span class=\"nx\">charset</span> <span class=\"o\">=</span> <span class=\"nx\">charset</span><span class=\"p\">;</span>\n        <span class=\"p\">}</span>\n\n        <span class=\"kd\">var</span> <span class=\"nx\">re</span> <span class=\"o\">=</span> <span class=\"sr\">/^(?:loaded|complete|undefined)$/</span><span class=\"p\">;</span>\n        <span class=\"nx\">node</span><span class=\"p\">.</span><span class=\"nx\">onreadystatechange</span> <span class=\"o\">=</span> <span class=\"nx\">node</span><span class=\"p\">.</span><span class=\"nx\">onload</span> <span class=\"o\">=</span> <span class=\"nx\">node</span><span class=\"p\">.</span><span class=\"nx\">onerror</span> <span class=\"o\">=</span> <span class=\"kd\">function</span><span class=\"p\">()</span> <span class=\"p\">{</span>\n            <span class=\"k\">if</span> <span class=\"p\">(</span><span class=\"nx\">re</span><span class=\"p\">.</span><span class=\"nx\">test</span><span class=\"p\">(</span><span class=\"nx\">node</span><span class=\"p\">.</span><span class=\"nx\">readyState</span><span class=\"p\">))</span> <span class=\"p\">{</span>\n                <span class=\"nx\">node</span><span class=\"p\">.</span><span class=\"nx\">onload</span> <span class=\"o\">=</span> <span class=\"nx\">node</span><span class=\"p\">.</span><span class=\"nx\">onerror</span> <span class=\"o\">=</span> <span class=\"nx\">node</span><span class=\"p\">.</span><span class=\"nx\">onreadystatechange</span> <span class=\"o\">=</span> <span class=\"kc\">null</span><span class=\"p\">;</span>\n\n                <span class=\"nx\">success</span><span class=\"p\">.</span><span class=\"nx\">call</span><span class=\"p\">(</span><span class=\"nx\">node</span><span class=\"p\">);</span>\n                <span class=\"nx\">node</span> <span class=\"o\">=</span> <span class=\"kc\">null</span><span class=\"p\">;</span>\n            <span class=\"p\">}</span>\n        <span class=\"p\">}</span>\n\n        <span class=\"nx\">node</span><span class=\"p\">.</span><span class=\"nx\">async</span> <span class=\"o\">=</span> <span class=\"kc\">true</span><span class=\"p\">;</span>\n        <span class=\"nx\">node</span><span class=\"p\">.</span><span class=\"nx\">src</span> <span class=\"o\">=</span> <span class=\"nx\">url</span><span class=\"p\">;</span>\n\n        <span class=\"kd\">var</span> <span class=\"nx\">head</span> <span class=\"o\">=</span> <span class=\"nx\">documentElement</span><span class=\"p\">.</span><span class=\"nx\">getElementsByTagName</span><span class=\"p\">(</span><span class=\"s1\">&#39;head&#39;</span><span class=\"p\">)[</span><span class=\"mi\">0</span><span class=\"p\">]</span> <span class=\"o\">||</span> <span class=\"nx\">doc</span><span class=\"p\">.</span><span class=\"nx\">documentElement</span><span class=\"p\">;</span>\n        <span class=\"nx\">head</span><span class=\"p\">.</span><span class=\"nx\">insertBefore</span><span class=\"p\">(</span><span class=\"nx\">node</span><span class=\"p\">,</span> <span class=\"nx\">head</span><span class=\"p\">.</span><span class=\"nx\">firstChild</span><span class=\"p\">);</span>\n    <span class=\"p\">}</span>\n</code></pre></div>\n<h2>karma.conf.js</h2>\n\n<p>测试的代码写在tests/mainSpec.js里，我们要载入tests/loader/1.js，修改karma的配置</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"p\">...</span> <span class=\"nx\">other</span> <span class=\"nx\">config</span> <span class=\"nx\">code</span> <span class=\"p\">...</span>\n\n        <span class=\"nx\">files</span><span class=\"o\">:</span> <span class=\"p\">[</span>\n                <span class=\"c1\">//保证loader下的文件可以访问,但是又不会直接引用到页面上</span>\n                <span class=\"p\">{</span> <span class=\"nx\">pattern</span><span class=\"o\">:</span> <span class=\"s1\">&#39;tests/loader/*.js&#39;</span><span class=\"p\">,</span> <span class=\"nx\">included</span><span class=\"o\">:</span> <span class=\"kc\">false</span> <span class=\"p\">},</span> \n                <span class=\"s1\">&#39;tests/lib/jquery-1.7.2.min.js&#39;</span><span class=\"p\">,</span>\n                <span class=\"s1\">&#39;tests/lib/expect.js&#39;</span><span class=\"p\">,</span>\n                <span class=\"s1\">&#39;tests/configData.js&#39;</span><span class=\"p\">,</span>\n                <span class=\"s1\">&#39;src/loader.js&#39;</span><span class=\"p\">,</span>\n                <span class=\"s1\">&#39;tests/**/*Spec.js&#39;</span>\n        <span class=\"p\">],</span>\n<span class=\"p\">...</span> <span class=\"nx\">other</span> <span class=\"nx\">config</span> <span class=\"nx\">code</span> <span class=\"p\">...</span>\n</code></pre></div>\n<h2>mainSpec.js里的改造</h2>\n\n<p>需要在karma的环境中，改造一下loadScript方法，其它环境中可以忽略</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"k\">if</span> <span class=\"p\">(</span><span class=\"nb\">window</span><span class=\"p\">.</span><span class=\"nx\">__karma__</span><span class=\"p\">)</span> <span class=\"p\">{</span> <span class=\"c1\">//只处理在karma的环境中</span>\n    <span class=\"kd\">var</span> <span class=\"nx\">__loadScript</span> <span class=\"o\">=</span> <span class=\"nx\">loadScript</span><span class=\"p\">;</span>\n    <span class=\"nx\">loadScript</span><span class=\"o\">=</span> <span class=\"kd\">function</span><span class=\"p\">()</span> <span class=\"p\">{</span>\n        <span class=\"kd\">var</span> <span class=\"nx\">args</span> <span class=\"o\">=</span> <span class=\"nb\">Array</span><span class=\"p\">.</span><span class=\"nx\">prototype</span><span class=\"p\">.</span><span class=\"nx\">slice</span><span class=\"p\">.</span><span class=\"nx\">call</span><span class=\"p\">(</span><span class=\"nx\">arguments</span><span class=\"p\">);</span>\n        <span class=\"c1\">//只处理本地路径 </span>\n        <span class=\"k\">if</span> <span class=\"p\">(</span><span class=\"nx\">args</span><span class=\"p\">[</span><span class=\"mi\">0</span><span class=\"p\">].</span><span class=\"nx\">indexOf</span><span class=\"p\">(</span><span class=\"s1\">&#39;http://&#39;</span><span class=\"p\">)</span> <span class=\"o\">==</span> <span class=\"o\">-</span><span class=\"mi\">1</span><span class=\"p\">)</span> <span class=\"p\">{</span>\n            <span class=\"nx\">args</span><span class=\"p\">[</span><span class=\"mi\">0</span><span class=\"p\">]</span> <span class=\"o\">=</span> <span class=\"s1\">&#39;/base/tests/&#39;</span> <span class=\"o\">+</span> <span class=\"nx\">args</span><span class=\"p\">[</span><span class=\"mi\">0</span><span class=\"p\">];</span>\n        <span class=\"p\">}</span>\n\n        <span class=\"nx\">__loadScript</span><span class=\"p\">.</span><span class=\"nx\">apply</span><span class=\"p\">(</span><span class=\"kc\">null</span><span class=\"p\">,</span> <span class=\"nx\">args</span><span class=\"p\">);</span>\n    <span class=\"p\">};</span>\n<span class=\"p\">}</span>\n</code></pre></div>\n<p>最后写一句最近非常大的一个感悟：没有测试代码的代码都是狗屎代码！</p>\n<br/>文章来源： <a href=\"http://jser.me/2013/08/21/karma%E4%B8%8B%E6%B5%8B%E8%AF%95%E5%BC%82%E6%AD%A5%E8%BD%BD%E5%85%A5%E7%9A%84js%E6%96%87%E4%BB%B6.html\">karma下测试异步载入的js文件</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#单元测试\" class=\"tag\">单元测试</a>  <a href=\"http://jser.me/tag.html#karma\" class=\"tag\">karma</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "javascript的几种使用多行字符串的方式 "
+            ],
+            "link": [
+              "http://jser.me/2013/08/20/javascript%E7%9A%84%E5%87%A0%E7%A7%8D%E4%BD%BF%E7%94%A8%E5%A4%9A%E8%A1%8C%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%96%B9%E5%BC%8F.html"
+            ],
+            "guid": [
+              "http://jser.me/2013/08/20/javascript的几种使用多行字符串的方式"
+            ],
+            "pubDate": [
+              "Tue, 20 Aug 2013 00:00:00 -0700"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<p>JS里并没有标准的多行字符串的表示方法，但是在用模板的时候，为了保证模板的可阅读性，我们又不可避免的使用多行字符串，所以出现了各种搞法，这里以一段jade的模板作为示例，简单总结和对比一下。</p>\n\n<h2>字符串相加</h2>\n\n<p>这是最容易理解也很常用的一种形式，如下</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"kd\">var</span> <span class=\"nx\">tmpl</span> <span class=\"o\">=</span><span class=\"s1\">&#39;&#39;</span><span class=\"o\">+</span>\n    <span class=\"s1\">&#39;!!! 5&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;html&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;  include header&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;  body&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;    //if IE 6&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;        .alert.alert-error&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;            center 对不起，我们不支持IE6，请升级你的浏览器&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;                a(href=&quot;http://windows.microsoft.com/zh-CN/internet-explorer/download-ie&quot;) | IE8官方下载&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;                a(href=&quot;https://www.google.com/intl/en/chrome/browser/&quot;) | Chrome下载&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;    include head&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;    .container&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;        .row-fluid&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;            .span8&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;                block main&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;                include pagerbar&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;            .span4&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;                include sidebar&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;    include footer&#39;</span> <span class=\"o\">+</span>\n    <span class=\"s1\">&#39;    include script&#39;</span>\n</code></pre></div>\n<p>优点:</p>\n\n<ul>\n<li>易理解，简单，可靠 </li>\n<li>足够灵活，可以在单个字符串中添加js逻辑 </li>\n</ul>\n\n<p>缺点 :</p>\n\n<ul>\n<li>并不是真正意义上的多行字符串, 如果想要真正的多行，需要自己加<code>\\n</code> </li>\n<li>大量的<code>+</code>号看上去满天星,大量的<code>&#39;</code>和<code>&quot;</code>, 丑陋</li>\n</ul>\n\n<h2>反斜线</h2>\n\n<p>这个叫续行符, 这个并非一种很常见的方式, 但是一旦用上了，还是很容易上瘾，只需要加一个字符</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"kd\">var</span> <span class=\"nx\">tmpl</span> <span class=\"o\">=</span><span class=\"s1\">&#39;\\</span>\n<span class=\"s1\">    !!! 5\\</span>\n<span class=\"s1\">    html\\</span>\n<span class=\"s1\">      include header\\</span>\n<span class=\"s1\">      body\\</span>\n<span class=\"s1\">        //if IE 6\\</span>\n<span class=\"s1\">            .alert.alert-error\\</span>\n<span class=\"s1\">                center 对不起，我们不支持IE6，请升级你的浏览器\\</span>\n<span class=\"s1\">                    a(href=&quot;http://windows.microsoft.com/zh-CN/internet-explorer/download-ie&quot;) | IE8官方下载\\</span>\n<span class=\"s1\">                    a(href=&quot;https://www.google.com/intl/en/chrome/browser/&quot;) | Chrome下载\\</span>\n<span class=\"s1\">        include head\\</span>\n<span class=\"s1\">        .container\\</span>\n<span class=\"s1\">            .row-fluid\\</span>\n<span class=\"s1\">                .span8\\</span>\n<span class=\"s1\">                    block main\\</span>\n<span class=\"s1\">                    include pagerbar\\</span>\n<span class=\"s1\">                .span4\\</span>\n<span class=\"s1\">                    include sidebar\\</span>\n<span class=\"s1\">        include footer\\</span>\n<span class=\"s1\">        include script&#39;</span>\n</code></pre></div>\n<p>优点:</p>\n\n<ul>\n<li>简单,每一行只需要有多一个<code>\\</code></li>\n<li>高效！在大部分的浏览器上，这种方式都是最快的，看这个<a href=\"http://jsperf.com/zp-string-concatenation/6\">效率对比</a></li>\n</ul>\n\n<p>缺点 :</p>\n\n<ul>\n<li>致命缺陷，每一行的<code>\\</code>必须不可以有空格，否则直接脚本错误 </li>\n<li>并不是真正意义上的多行字符串, 如果想要真正的多行，需要自己加<code>\\n</code> </li>\n<li>尽管绝大部分的js引擎都支持它，但是它并不是ECMAScript的一部分(我并没有研究规范，这句话是从<a href=\"http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml?showone=Multiline_string_literals#Multiline_string_literals\">google的编码规范</a>翻译过来的)</li>\n</ul>\n\n<h2>字符串数组join</h2>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"kd\">var</span> <span class=\"nx\">tmpl</span> <span class=\"o\">=</span> <span class=\"p\">[</span>\n    <span class=\"s1\">&#39;!!! 5&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;html&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;  include header&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;  body&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;    //if IE 6&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;        .alert.alert-error&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;            center 对不起，我们不支持IE6，请升级你的浏览器&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;                a(href=&quot;http://windows.microsoft.com/zh-CN/internet-explorer/download-ie&quot;) | IE8官方下载&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;                a(href=&quot;https://www.google.com/intl/en/chrome/browser/&quot;) | Chrome下载&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;    include head&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;    .container&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;        .row-fluid&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;            .span8&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;                block main&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;                include pagerbar&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;            .span4&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;                include sidebar&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;    include footer&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;    include script&#39;</span><span class=\"p\">].</span><span class=\"nx\">join</span><span class=\"p\">(</span><span class=\"s1\">&#39;\\n&#39;</span><span class=\"p\">);</span>\n</code></pre></div>\n<p>优点:</p>\n\n<ul>\n<li>真正意义上的多行字符串 </li>\n<li>易理解，简单，可靠 </li>\n<li>足够灵活，可以在单个字符串中添加js逻辑 </li>\n</ul>\n\n<p>缺点 :</p>\n\n<ul>\n<li>大量的<code>,</code>号和<code>&#39;</code>、<code>&quot;</code>, 丑陋</li>\n</ul>\n\n<h2>String.prototype.concat</h2>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"kd\">var</span> <span class=\"nx\">tmpl</span> <span class=\"o\">=</span> <span class=\"nb\">String</span><span class=\"p\">.</span><span class=\"nx\">prototype</span><span class=\"p\">.</span><span class=\"nx\">concat</span><span class=\"p\">.</span><span class=\"nx\">call</span><span class=\"p\">(</span>\n    <span class=\"s1\">&#39;!!! 5&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;html&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;  include header&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;  body&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;    //if IE 6&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;        .alert.alert-error&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;            center 对不起，我们不支持IE6，请升级你的浏览器&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;                a(href=&quot;http://windows.microsoft.com/zh-CN/internet-explorer/download-ie&quot;) | IE8官方下载&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;                a(href=&quot;https://www.google.com/intl/en/chrome/browser/&quot;) | Chrome下载&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;    include head&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;    .container&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;        .row-fluid&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;            .span8&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;                block main&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;                include pagerbar&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;            .span4&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;                include sidebar&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;    include footer&#39;</span> <span class=\"p\">,</span>\n    <span class=\"s1\">&#39;    include script&#39;</span><span class=\"p\">);</span>\n</code></pre></div>\n<p>优点:</p>\n\n<ul>\n<li>不常用，事实上字符串的concat方法远没有<code>+</code>号常见</li>\n<li>易理解，简单，可靠 </li>\n<li>足够灵活，可以在单个字符串中添加js逻辑 </li>\n</ul>\n\n<p>缺点 :</p>\n\n<ul>\n<li>并不是真正意义上的多行字符串 </li>\n<li>大量的<code>,</code>号和<code>&#39;</code>、<code>&quot;</code>, 丑陋</li>\n</ul>\n\n<h2>heredoc</h2>\n\n<p>这是一种很有技巧的解决办法, 利用了function的toString方法</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"kd\">function</span> <span class=\"nx\">heredoc</span><span class=\"p\">(</span><span class=\"nx\">fn</span><span class=\"p\">)</span> <span class=\"p\">{</span>\n    <span class=\"k\">return</span> <span class=\"nx\">fn</span><span class=\"p\">.</span><span class=\"nx\">toString</span><span class=\"p\">().</span><span class=\"nx\">split</span><span class=\"p\">(</span><span class=\"s1\">&#39;\\n&#39;</span><span class=\"p\">).</span><span class=\"nx\">slice</span><span class=\"p\">(</span><span class=\"mi\">1</span><span class=\"p\">,</span><span class=\"o\">-</span><span class=\"mi\">1</span><span class=\"p\">).</span><span class=\"nx\">join</span><span class=\"p\">(</span><span class=\"s1\">&#39;\\n&#39;</span><span class=\"p\">)</span> <span class=\"o\">+</span> <span class=\"s1\">&#39;\\n&#39;</span>\n<span class=\"p\">}</span>\n\n<span class=\"kd\">var</span> <span class=\"nx\">tmpl</span> <span class=\"o\">=</span> <span class=\"nx\">heredoc</span><span class=\"p\">(</span><span class=\"kd\">function</span><span class=\"p\">(){</span><span class=\"cm\">/*</span>\n<span class=\"cm\">    !!! 5</span>\n<span class=\"cm\">    html</span>\n<span class=\"cm\">      include header</span>\n<span class=\"cm\">      body</span>\n<span class=\"cm\">        //if IE 6</span>\n<span class=\"cm\">            .alert.alert-error</span>\n<span class=\"cm\">                center 对不起，我们不支持IE6，请升级你的浏览器</span>\n<span class=\"cm\">                    a(href=&quot;http://windows.microsoft.com/zh-CN/internet-explorer/download-ie&quot;) | IE8官方下载</span>\n<span class=\"cm\">                    a(href=&quot;https://www.google.com/intl/en/chrome/browser/&quot;) | Chrome下载</span>\n<span class=\"cm\">        include head</span>\n<span class=\"cm\">        .container</span>\n<span class=\"cm\">            .row-fluid</span>\n<span class=\"cm\">                .span8</span>\n<span class=\"cm\">                    block main</span>\n<span class=\"cm\">                    include pagerbar</span>\n<span class=\"cm\">                .span4</span>\n<span class=\"cm\">                    include sidebar</span>\n<span class=\"cm\">        include footer</span>\n<span class=\"cm\">        include script</span>\n<span class=\"cm\"> */</span><span class=\"p\">});</span>\n</code></pre></div>\n<p>优点:</p>\n\n<ul>\n<li>模板字符串内不必写多余的任何字符，干净，简单 </li>\n<li>真正意义上的多行字符串, 有<code>\\n</code>哦 </li>\n</ul>\n\n<p>缺点 :</p>\n\n<ul>\n<li>不可以在单个字符串中添加js逻辑 </li>\n<li>容易被压缩器压缩掉，yui compressor可以通过<code>/*!</code>来避免被压缩掉，<a href=\"https://github.com/mishoo/UglifyJS2\">uglifyjs</a>和<a href=\"https://developers.google.com/closure/compiler/\">gcc</a>也可以通过选项配置不删除特定的注释，这个不是大问题</li>\n</ul>\n\n<h2>coffeescript</h2>\n\n<p>相当于换了一个语言，其实这种语言上缺少的功能，通过<a href=\"http://coffeescript.org/#strings\">coffeescript</a>这种以js为编译目标的语言来实现是一种非常棒的选择。    </p>\n<div class=\"highlight\"><pre><code class=\"coffeescript language-coffeescript\" data-lang=\"coffeescript\"><span class=\"nx\">var</span> <span class=\"nv\">tmpl = </span><span class=\"s\">&quot;&quot;&quot; </span>\n<span class=\"s\">    !!! 5</span>\n<span class=\"s\">    html</span>\n<span class=\"s\">      include header</span>\n<span class=\"s\">      body</span>\n<span class=\"s\">        //if IE 6</span>\n<span class=\"s\">            .alert.alert-error</span>\n<span class=\"s\">                center 对不起，我们不支持IE6，请升级你的浏览器</span>\n<span class=\"s\">                    a(href=&quot;http://windows.microsoft.com/zh-CN/internet-explorer/download-ie&quot;) | IE8官方下载</span>\n<span class=\"s\">                    a(href=&quot;https://www.google.com/intl/en/chrome/browser/&quot;) | Chrome下载</span>\n<span class=\"s\">        include head</span>\n<span class=\"s\">        .container</span>\n<span class=\"s\">            .row-fluid</span>\n<span class=\"s\">                .span8</span>\n<span class=\"s\">                    block main</span>\n<span class=\"s\">                    include pagerbar</span>\n<span class=\"s\">                .span4</span>\n<span class=\"s\">                    include sidebar</span>\n<span class=\"s\">        include footer</span>\n<span class=\"s\">        include script</span>\n<span class=\"s\">    &quot;&quot;&quot;</span>\n</code></pre></div>\n<p>优点:</p>\n\n<ul>\n<li>易理解，简单，可靠 </li>\n</ul>\n\n<p>缺点 :</p>\n\n<ul>\n<li>需要了解coffeescript </li>\n<li>整个文件都需要用coffeescript来写</li>\n</ul>\n\n<h2>ES6</h2>\n\n<p>ES6的有一个新的特性，<a href=\"http://wiki.ecmascript.org/doku.php?id=harmony:quasis\">Template Strings</a>, 这是语言层面上第一次实现了多行字符串, 在<a href=\"https://www.google.com/intl/en/chrome/browser/canary.html\">chrome canary</a>里打开<code>Enable Experimental JavaScript</code>就可以使用这个特性，另外<a href=\"http://www.typescriptlang.org/\">typescript</a>也会支持这种方式</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"kd\">var</span> <span class=\"nx\">tmpl</span> <span class=\"o\">=</span> \n   <span class=\"err\">`</span><span class=\"o\">!!!</span> <span class=\"mi\">5</span>\n    <span class=\"nx\">html</span>\n      <span class=\"nx\">include</span> <span class=\"nx\">header</span>\n      <span class=\"nx\">body</span>\n        <span class=\"c1\">//if IE 6</span>\n            <span class=\"p\">.</span><span class=\"nx\">alert</span><span class=\"p\">.</span><span class=\"nx\">alert</span><span class=\"o\">-</span><span class=\"nx\">error</span>\n                <span class=\"nx\">center</span> <span class=\"err\">对不起，我们不支持</span><span class=\"nx\">IE6</span><span class=\"err\">，请升级你的浏览器</span>\n                    <span class=\"nx\">a</span><span class=\"p\">(</span><span class=\"nx\">href</span><span class=\"o\">=</span><span class=\"s2\">&quot;http://windows.microsoft.com/zh-CN/internet-explorer/download-ie&quot;</span><span class=\"p\">)</span> <span class=\"o\">|</span> <span class=\"nx\">IE8</span><span class=\"err\">官方下载</span>\n                    <span class=\"nx\">a</span><span class=\"p\">(</span><span class=\"nx\">href</span><span class=\"o\">=</span><span class=\"s2\">&quot;https://www.google.com/intl/en/chrome/browser/&quot;</span><span class=\"p\">)</span> <span class=\"o\">|</span> <span class=\"nx\">Chrome</span><span class=\"err\">下载</span>\n        <span class=\"nx\">include</span> <span class=\"nx\">head</span>\n        <span class=\"p\">.</span><span class=\"nx\">container</span>\n            <span class=\"p\">.</span><span class=\"nx\">row</span><span class=\"o\">-</span><span class=\"nx\">fluid</span>\n                <span class=\"p\">.</span><span class=\"nx\">span8</span>\n                    <span class=\"nx\">block</span> <span class=\"nx\">main</span>\n                    <span class=\"nx\">include</span> <span class=\"nx\">pagerbar</span>\n                <span class=\"p\">.</span><span class=\"nx\">span4</span>\n                    <span class=\"nx\">include</span> <span class=\"nx\">sidebar</span>\n        <span class=\"nx\">include</span> <span class=\"nx\">footer</span>\n        <span class=\"nx\">include</span> <span class=\"nx\">script</span><span class=\"err\">`</span>\n</code></pre></div>\n<p>优点:</p>\n\n<ul>\n<li>易理解，原生支持 </li>\n<li>真正的多行字符串</li>\n</ul>\n\n<p>缺点 :</p>\n\n<ul>\n<li>JS引擎支持有限 </li>\n</ul>\n\n<h2>总结</h2>\n\n<p>看了这么些写法，如何选择？如果你用的是coffeescript，放心大胆的使用它支持的多行字符串写法；如果是在客户端，同时你解决了你的压缩器去掉注释的问题，推荐使用heredoc；如果你无法解决压缩器的问题，使用反斜线连接吧，每行只需要加一个字符。</p>\n<br/>文章来源： <a href=\"http://jser.me/2013/08/20/javascript%E7%9A%84%E5%87%A0%E7%A7%8D%E4%BD%BF%E7%94%A8%E5%A4%9A%E8%A1%8C%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%96%B9%E5%BC%8F.html\">javascript的几种使用多行字符串的方式</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#javascript\" class=\"tag\">javascript</a>  <a href=\"http://jser.me/tag.html#多行字符串\" class=\"tag\">多行字符串</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "lion下的safari6对纯数字使用toString报错, TypeError: Type error "
+            ],
+            "link": [
+              "http://jser.me/2013/07/29/lion%E4%B8%8B%E7%9A%84safari6%E5%AF%B9%E7%BA%AF%E6%95%B0%E5%AD%97%E4%BD%BF%E7%94%A8toString%E6%8A%A5%E9%94%99.html"
+            ],
+            "guid": [
+              "http://jser.me/2013/07/29/lion下的safari6对纯数字使用toString报错"
+            ],
+            "pubDate": [
+              "Mon, 29 Jul 2013 00:00:00 -0700"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<p>最近有同事反应在Mac OS 10.8也就是Lion上的safari有广告无法展现的问题，但是不是必现，只是偶尔发生,而之前也有同事反馈在ios上的safari广告有时候也无法展现。用Mac刷了会广告，确实有很大概率的出现问题，在ipad上看也是会有概率出现。</p>\n\n<p>绑定本机hosts，打开开发者工具，一个劲的刷，再也不会出现，心中暗惊，怕哥了，躲起来了？关闭浏览器，重新打开，重现了Bug，擦，再打开开发者工具，又无法复现，难道这是一个会躲开发者的Bug?</p>\n\n<p>但是代码已经定位到</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"nx\">utils</span><span class=\"p\">.</span><span class=\"nx\">encode</span> <span class=\"o\">=</span> <span class=\"kd\">function</span><span class=\"p\">(</span><span class=\"nx\">str</span><span class=\"p\">)</span> <span class=\"p\">{</span>\n   <span class=\"k\">return</span> <span class=\"nb\">encodeURIComponent</span><span class=\"p\">(</span><span class=\"nx\">str</span><span class=\"p\">.</span><span class=\"nx\">toString</span><span class=\"p\">());</span>\n<span class=\"p\">}</span>\n</code></pre></div>\n<p>最后通过删减，定位到</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\">  <span class=\"nx\">str</span><span class=\"p\">.</span><span class=\"nx\">toString</span><span class=\"p\">()</span>\n</code></pre></div>\n<p>有点惊异，首先传的值不会是undefined和null，都是正常的字符串和数字，理论上调用toString是不应该出现问题的，但是它就是出了，所以还是得想解决办法，其实也挺简单的，换成字符串相加解决之，理论上字符串相加也是调用的toString，为什么它不会出现问题，这很神奇，小伙伴们相当不解，解决问题的代码如下：</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"nx\">utils</span><span class=\"p\">.</span><span class=\"nx\">encode</span> <span class=\"o\">=</span> <span class=\"kd\">function</span><span class=\"p\">(</span><span class=\"nx\">str</span><span class=\"p\">)</span> <span class=\"p\">{</span>\n   <span class=\"k\">return</span> <span class=\"nb\">encodeURIComponent</span><span class=\"p\">(</span><span class=\"nx\">str</span> <span class=\"o\">+</span> <span class=\"s1\">&#39;&#39;</span><span class=\"p\">);</span>\n<span class=\"p\">}</span>\n</code></pre></div>\n<p>后来发现在Github上也已经有人提过<a href=\"https://github.com/mleibman/SlickGrid/pull/472\">这个Bug</a></p>\n\n<p>单独提出来的代码也无法复现这个Bug，附上<a href=\"/demos/2013-07-29-safari-number-tostring-error.html\">测试页面</a>, 这个只是解决问题，真正的原因还没有弄清楚，哪位小伙伴若知详情，求分解。</p>\n<br/>文章来源： <a href=\"http://jser.me/2013/07/29/lion%E4%B8%8B%E7%9A%84safari6%E5%AF%B9%E7%BA%AF%E6%95%B0%E5%AD%97%E4%BD%BF%E7%94%A8toString%E6%8A%A5%E9%94%99.html\">lion下的safari6对纯数字使用toString报错, TypeError: Type error</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#javascript\" class=\"tag\">javascript</a>  <a href=\"http://jser.me/tag.html#safari\" class=\"tag\">safari</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "旧blog迁移到jekyll+github "
+            ],
+            "link": [
+              "http://jser.me/2013/07/28/%E6%97%A7blog%E8%BF%81%E7%A7%BB%E5%88%B0jekyll%2Bgithub.html"
+            ],
+            "guid": [
+              "http://jser.me/2013/07/28/旧blog迁移到jekyll+github"
+            ],
+            "pubDate": [
+              "Sun, 28 Jul 2013 00:00:00 -0700"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<h2>详细说说为什么</h2>\n\n<p>如你所见，如果你之前看过我的<a href=\"http://jser.me/2012/08/03/%E4%B8%80%E4%B8%AA%E5%85%A8%E6%96%B0%E7%9A%84Blog.html\">Blog</a>应该，能感觉到这个Blog又改变了。</p>\n\n<p>看看<a href=\"http://jser.me\">首页</a>，2013年已经过去了大半了，加上这篇这一年才写了四篇，实在汗颜，不写东西其实是意味着没有总结，这大半年，基本没太大进步 :( 。</p>\n\n<p>为什么一直不想写东西呢，一个重要的原因是被“过去”束缚了，当我打开老的blog，想写东西时，总是忍不住的想改代码，加功能，想改数据库的结构，改界面，搞响应式，加webfont，细想一下，blog本身应该是内容优先，这么做，本末倒置。</p>\n\n<p>趁着这个周末,决定再折腾一把，以后就只写内容，不再处理数据库之类的东西了！</p>\n\n<h2>确立目标</h2>\n\n<p>这有点像一个小项目，先确立目标</p>\n\n<ul>\n<li>主题基本不变 \n\n<ul>\n<li>当时改这个主题的时候，花了不少时间，不能浪费</li>\n</ul></li>\n<li>老的文章的链接支持\n\n<ul>\n<li>放出去的链接多是老的链接，这个需要有一种可以兼容的方式 </li>\n</ul></li>\n<li>忽略老评论\n\n<ul>\n<li>是的，你没看错，因为老评论确实也没多少，直接忽略吧</li>\n</ul></li>\n<li>使用社会化评论组件 \n\n<ul>\n<li>不需要注册不需要登录，更大化的从社交网站引流</li>\n</ul></li>\n<li>保证文章的图片正确 \n\n<ul>\n<li>老的blog系统使用的是静态资源和系统分离的方式，老系统图片全部在s.jser.me下，需要解决</li>\n</ul></li>\n<li>rss正常输出\n\n<ul>\n<li>纵然google reader已经去了，rss仍然是我最喜爱的一种传递知识的方式</li>\n</ul></li>\n<li>标签的使用\n\n<ul>\n<li>老blog一直是有存储标签数据，只是没有正常展示，这次需要把这个问题解决一下</li>\n</ul></li>\n<li>独立域名\n\n<ul>\n<li>支持独立域名</li>\n</ul></li>\n</ul>\n\n<h2>为什么是jekyll + github</h2>\n\n<p>用git像管理代码一样管理文章是不是很酷？github是能在网上实现这个的一个最好的选择，它支持gh-pages，不限流量，没有比githu更好的服务了。jekyll是github默认支持的，同时使用非常广泛，这保证了在出问题时能最快的google到答案，它有完整的文档和诸多插件，所以就是它们了！jekyll + github!</p>\n\n<h2>安装jekyll</h2>\n<div class=\"highlight\"><pre><code class=\"bash language-bash\" data-lang=\"bash\">sudo gem install jekyll\njekyll new blog\n<span class=\"nb\">cd </span>blog\njekyll serve -w\n</code></pre></div>\n<p>如上码，<code>new blog</code>之后会自动在blog里建立相应的文件和文件夹，<code>serve -w</code>加了w参数jekyll监视文件变化，自动生成新的文件。</p>\n\n<h2>导出旧的blog数据</h2>\n\n<p>jekyll默认的文章文件格式是<code>年-月-日-title.md</code>，写一个nodejs的脚本，把mongodb里存的数据全部搞出来，然后生成文件就行了。\n文章的开头需要指明一些文章的数据，这些也一并生成。</p>\n<div class=\"highlight\"><pre><code class=\"yaml language-yaml\" data-lang=\"yaml\"><span class=\"nn\">---</span>\n<span class=\"l-Scalar-Plain\">layout</span> <span class=\"p-Indicator\">:</span> <span class=\"l-Scalar-Plain\">post</span>\n<span class=\"l-Scalar-Plain\">title</span> <span class=\"p-Indicator\">:</span> <span class=\"l-Scalar-Plain\">这里写标题</span>\n<span class=\"l-Scalar-Plain\">tags</span> <span class=\"p-Indicator\">:</span> <span class=\"l-Scalar-Plain\">这里写tag 可以空格 分隔</span>\n<span class=\"nn\">---</span>\n</code></pre></div>\n<h2>修正文章中图片链接</h2>\n\n<p>在blog目录新建一个images目录，把以前由程序上传的图片全部放在这个目录下，然后用sed替换掉文章里的图片链接。\nmac下的sed，试了多次，一直提示<code>invaid command code .</code>，加上e参数就行了，暂不清楚为什么要加e参数，全部替换后，会生成备份文件mde，删除</p>\n<div class=\"highlight\"><pre><code class=\"bash language-bash\" data-lang=\"bash\">sed -ie <span class=\"s2\">&quot;s/http:\\/\\/s.jser.me//g&quot;</span> <span class=\"sb\">`</span>grep <span class=\"s2\">&quot;http://s.jser.me&quot;</span> -rl *<span class=\"sb\">`</span>\nrm *.mde\n</code></pre></div>\n<h2>标签的生成</h2>\n\n<p>jekyll还是数据组织还是相当不错的，可以通过下面的方式获取所有的标签及它们的数量，在需要展示的地方放上这段，这里用到了<a href=\"https://github.com/Shopify/liquid\">Liquid</a>的一个标准<a href=\"https://github.com/shopify/liquid/wiki/liquid-for-designers#standard-filters\">过滤器</a>。</p>\n<div class=\"highlight\"><pre><code class=\"html language-html\" data-lang=\"html\">{% for tag in site.tags %}\n<span class=\"nt\">&lt;a</span> <span class=\"na\">class=</span><span class=\"s\">&quot;tag&quot;</span> <span class=\"na\">href=</span><span class=\"s\">&quot;/tag.html#{{tag[0]}}&quot;</span><span class=\"nt\">&gt;</span>{{tag[0]}}<span class=\"nt\">&lt;span</span> <span class=\"na\">class=</span><span class=\"s\">&quot;tagcount&quot;</span><span class=\"nt\">&gt;</span>{{tag[1] | size}}<span class=\"nt\">&lt;/span&gt;&lt;/a&gt;</span>\n{% endfor %}\n</code></pre></div>\n<h2>获取相关日志</h2>\n\n<p>相关日志jekyll默认就支持，可以通过site.related_posts来获取，默认情况下，这个并不会太精确，如果需要很精确的相关，需要开启<code>_config.yml</code>里的选项<code>lsi:true</code>。</p>\n<div class=\"highlight\"><pre><code class=\"html language-html\" data-lang=\"html\">{% for post in site.related_posts limit:5 %}\n    <span class=\"nt\">&lt;div</span> <span class=\"na\">class=</span><span class=\"s\">&quot;article&quot;</span><span class=\"nt\">&gt;</span>\n        <span class=\"nt\">&lt;span</span> <span class=\"na\">class=</span><span class=\"s\">&quot;datetime&quot;</span><span class=\"nt\">&gt;</span>{{ post.date | date:&quot;%Y-%m-%d&quot;}}<span class=\"nt\">&lt;/span&gt;</span>\n        <span class=\"nt\">&lt;a</span> <span class=\"na\">href=</span><span class=\"s\">&quot;{{ post.url }}&quot;</span><span class=\"nt\">&gt;</span>{{ post.title }}<span class=\"nt\">&lt;/a&gt;</span>\n    <span class=\"nt\">&lt;/div&gt;</span>\n{% endfor %}\n</code></pre></div>\n<h2>搜索引擎的怎么办</h2>\n\n<p>我打算不直接处理搜索引擎，因为jekyll的方式其实就是静态文件的方式，我们无法设置301，所以引导搜索引擎的工作就算我想做也做不到。</p>\n\n<p>但是对于通过以前的链接跳转过来的，可以通过github的自定义404的功能，引导他们到新链接上，比如对于<code>http://jser.me/p/18795</code>，我可以保存一个<code>18795</code>这样的老的id和新的链接一一对应的数据，然后在404页面引导用户到正确的链接上，比如你可以<a href=\"http://jser.me/p/26d61\">访问一下</a>。</p>\n\n<h2>按年份输出列表</h2>\n\n<p>这是一种我喜欢的方式，有点像归档，可以用下面的代码搞定</p>\n<div class=\"highlight\"><pre><code class=\"html language-html\" data-lang=\"html\">{% for post in site.posts %}\n   {% unless post.next %}\n     <span class=\"nt\">&lt;h1&gt;</span>{{ post.date | date: &#39;%Y&#39; }}<span class=\"nt\">&lt;/h1&gt;</span>\n   {% else %}\n     {% capture year %}{{ post.date | date: &#39;%Y&#39; }}{% endcapture %}\n     {% capture nyear %}{{ post.next.date | date: &#39;%Y&#39; }}{% endcapture %}\n     {% if year != nyear %}\n       <span class=\"nt\">&lt;h1&gt;</span>{{ post.date | date: &#39;%Y&#39; }}<span class=\"nt\">&lt;/h1&gt;</span>\n     {% endif %}\n   {% endunless %}\n   <span class=\"nt\">&lt;div</span> <span class=\"na\">class=</span><span class=\"s\">&quot;article&quot;</span><span class=\"nt\">&gt;</span>\n       <span class=\"nt\">&lt;span</span> <span class=\"na\">class=</span><span class=\"s\">&quot;datetime&quot;</span><span class=\"nt\">&gt;</span>{{ post.date | date:&quot;%m-%d&quot; }} <span class=\"nt\">&lt;/span&gt;</span>\n       <span class=\"nt\">&lt;a</span> <span class=\"na\">href=</span><span class=\"s\">&quot;{{ post.url }}&quot;</span><span class=\"nt\">&gt;</span>{{ post.title }}<span class=\"nt\">&lt;/a&gt;</span>\n   <span class=\"nt\">&lt;/div&gt;</span>\n{% endfor %}\n</code></pre></div>\n<h2>RSS生成</h2>\n\n<p>jekyll会把除了_下目录下的东西都尝试编译一下，所以我们在根目录下放一个符合格式rss.xml，它就会被编译成正确的带有完整数据的rss.xml</p>\n<div class=\"highlight\"><pre><code class=\"html language-html\" data-lang=\"html\">---\nlayout : nil\n---\n\n<span class=\"cp\">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>\n<span class=\"nt\">&lt;rss</span> <span class=\"na\">xmlns:dc=</span><span class=\"s\">&quot;http://purl.org/dc/elements/1.1/&quot;</span> <span class=\"na\">version=</span><span class=\"s\">&quot;2.0&quot;</span><span class=\"nt\">&gt;</span>\n<span class=\"nt\">&lt;channel&gt;</span>\n<span class=\"nt\">&lt;title&gt;</span>{{site.name |append:&#39; &#39; xml_escape}}<span class=\"nt\">&lt;/title&gt;</span>\n<span class=\"nt\">&lt;image&gt;</span>\n    <span class=\"nt\">&lt;link&gt;</span>http://jser.me<span class=\"nt\">&lt;/link&gt;</span>\n    <span class=\"nt\">&lt;url&gt;</span>http://jser.me/images/logo.png<span class=\"nt\">&lt;/url&gt;</span>\n<span class=\"nt\">&lt;/image&gt;</span>\n<span class=\"nt\">&lt;link&gt;</span>http://jser.me<span class=\"nt\">&lt;/link&gt;</span>\n<span class=\"nt\">&lt;description/&gt;</span>\n<span class=\"nt\">&lt;language&gt;</span>zh-cn<span class=\"nt\">&lt;/language&gt;</span>\n<span class=\"nt\">&lt;generator&gt;</span>http://jser.me<span class=\"nt\">&lt;/generator&gt;</span>\n<span class=\"nt\">&lt;ttl&gt;</span>5<span class=\"nt\">&lt;/ttl&gt;</span>\n<span class=\"nt\">&lt;copyright&gt;</span><span class=\"cp\">&lt;![CDATA[Copyright &amp;copy; jser.me]]&gt;</span><span class=\"nt\">&lt;/copyright&gt;</span>\n{% for post in site.posts limit: 20 %}\n     <span class=\"nt\">&lt;item&gt;</span>\n         <span class=\"nt\">&lt;title&gt;</span>{{ post.title | append:&#39; &#39; xml_escape }}<span class=\"nt\">&lt;/title&gt;</span>\n         <span class=\"nt\">&lt;link&gt;</span>{{ site.url }}{{ post.url }}<span class=\"nt\">&lt;/link&gt;</span>\n         <span class=\"nt\">&lt;guid&gt;</span>{{ site.url }}{{ post.id }}<span class=\"nt\">&lt;/guid&gt;</span>\n         <span class=\"nt\">&lt;pubDate&gt;</span>{{ post.date | date_to_rfc822 }}<span class=\"nt\">&lt;/pubDate&gt;</span>\n         <span class=\"nt\">&lt;author&gt;</span><span class=\"cp\">&lt;![CDATA[草依山]]&gt;</span><span class=\"nt\">&lt;/author&gt;</span>\n         <span class=\"nt\">&lt;description&gt;</span><span class=\"cp\">&lt;![CDATA[{{ post.content | expand_urls: site.url }}]]&gt;</span><span class=\"nt\">&lt;/description&gt;</span>\n     <span class=\"nt\">&lt;/item&gt;</span>\n{% endfor %}\n<span class=\"nt\">&lt;/channel&gt;</span>\n<span class=\"nt\">&lt;/rss&gt;</span>\n</code></pre></div>\n<h2>挑选一个社会化评论组件</h2>\n\n<p>暂时没有考虑使用discus, <a href=\"http://duoshuo.com\">多说</a>由于它简洁易用，成功的被我选上了。</p>\n\n<h2>写作时的注意事项</h2>\n\n<ul>\n<li>语法高亮支持请在<code>_config.yml</code>里设置<code>pygments:true</code>, 默认情况下它是true</li>\n<li>可能不知道某些语言高亮的时候应该表示为什么，可以在<a href=\"http://pygments.org/demo/\">这里</a>查看，比如yml的是yaml</li>\n<li>如果想输出liquid的东西，需要把它包裹在raw里</li>\n<li>标题里如果含有:，可以把整个标题用单引号或者它的html实体表示</li>\n<li>如果想写草稿，创建一个_drafts目录，然后在里面写，启动的时候加个参数<code>jekyll serve -w --drafts</code></li>\n</ul>\n\n<h2>github上的设置</h2>\n\n<p>创建仓库，<username>.github.io, 建立一个这样的仓库，可以在master上提交一个jekyll的站点后，github自动帮你生成所有的静态文件。</p>\n\n<p>在本地的blog目录添加一下远程仓库，然后创建一个域名文件CNAME，里面包含你的域名，提交上去，域名绑定我之前<a href=\"http://jser.me/2012/11/17/%E8%87%AA%E5%AE%9A%E4%B9%89github-pages%E7%9A%84%E5%9F%9F%E5%90%8D.html\">写过</a>。</p>\n<div class=\"highlight\"><pre><code class=\"bash language-bash\" data-lang=\"bash\"><span class=\"nb\">cd </span>blog\ngit init  .\ngit remote add origin git@github.com:&lt;username&gt;/&lt;username&gt;.github.io.git\ncat <span class=\"s1\">&#39;jser.me&#39;</span> &gt; CNMAE\ngit -am init\ngit push origin master\n</code></pre></div>\n<h2>总结</h2>\n\n<p>一开始的目标完成的怎么样呢</p>\n\n<ul>\n<li>主题基本不变             ----- ok</li>\n<li>老的文章的链接支持       ----- ok</li>\n<li>忽略老评论               ----- ok</li>\n<li>使用社会化评论组件       ----- ok</li>\n<li>保证文章的图片正确       ----- ok </li>\n<li>rss正常输出              ----- ok</li>\n<li>标签的使用               ----- ok</li>\n<li>独立域名                 ----- ok</li>\n</ul>\n\n<p>非常赞，预定目标都完成了。总的来看jekyll足够灵活，基本上满足了我的所有需求，这也算是一次成功的折腾了吧，<a href=\"https://github.com/jserme/jserme.github.io\">源代码在这里</a>。小伙伴们，一起专注于blog的内容，期待更多内容吧～</p>\n<br/>文章来源： <a href=\"http://jser.me/2013/07/28/%E6%97%A7blog%E8%BF%81%E7%A7%BB%E5%88%B0jekyll%2Bgithub.html\">旧blog迁移到jekyll+github</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#github\" class=\"tag\">github</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "Git修改历史提交的信息 "
+            ],
+            "link": [
+              "http://jser.me/2013/07/17/Git%E4%BF%AE%E6%94%B9%E5%8E%86%E5%8F%B2%E6%8F%90%E4%BA%A4%E7%9A%84%E4%BF%A1%E6%81%AF.html"
+            ],
+            "guid": [
+              "http://jser.me/2013/07/17/Git修改历史提交的信息"
+            ],
+            "pubDate": [
+              "Wed, 17 Jul 2013 00:00:00 -0700"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<h2>起因</h2>\n\n<p>公司内部使用的gitlab分支上可以使用未注册的用户提交，但是在master分支上必须是注册用户，就算是提交分支成功了，再往master合并的时候也会出错，所以只能修改历史提交纪录</p>\n\n<h2>解决</h2>\n\n<p>本质上就是使用<code>git filter-branch</code>，<a href=\"https://www.kernel.org/pub/software/scm/git/docs/git-filter-branch.html\">这里</a>是这个命令的详细文档，另外github上提供了一个脚本</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"err\">#</span><span class=\"o\">!</span><span class=\"err\">/bin/sh</span>\n\n<span class=\"nx\">git</span> <span class=\"nx\">filter</span><span class=\"o\">-</span><span class=\"nx\">branch</span> <span class=\"o\">--</span><span class=\"nx\">env</span><span class=\"o\">-</span><span class=\"nx\">filter</span> <span class=\"s1\">&#39;</span>\n\n<span class=\"s1\">an=&quot;$GIT_AUTHOR_NAME&quot;</span>\n<span class=\"s1\">am=&quot;$GIT_AUTHOR_EMAIL&quot;</span>\n<span class=\"s1\">cn=&quot;$GIT_COMMITTER_NAME&quot;</span>\n<span class=\"s1\">cm=&quot;$GIT_COMMITTER_EMAIL&quot;</span>\n\n<span class=\"s1\">if [ &quot;$GIT_COMMITTER_EMAIL&quot; = &quot;your@email.to.match&quot; ]</span>\n<span class=\"s1\">then</span>\n<span class=\"s1\">    cn=&quot;Your New Committer Name&quot;</span>\n<span class=\"s1\">    cm=&quot;Your New Committer Email&quot;</span>\n<span class=\"s1\">fi</span>\n<span class=\"s1\">if [ &quot;$GIT_AUTHOR_EMAIL&quot; = &quot;your@email.to.match&quot; ]</span>\n<span class=\"s1\">then</span>\n<span class=\"s1\">    an=&quot;Your New Author Name&quot;</span>\n<span class=\"s1\">    am=&quot;Your New Author Email&quot;</span>\n<span class=\"s1\">fi</span>\n\n<span class=\"s1\">export GIT_AUTHOR_NAME=&quot;$an&quot;</span>\n<span class=\"s1\">export GIT_AUTHOR_EMAIL=&quot;$am&quot;</span>\n<span class=\"s1\">export GIT_COMMITTER_NAME=&quot;$cn&quot;</span>\n<span class=\"s1\">export GIT_COMMITTER_EMAIL=&quot;$cm&quot;</span>\n<span class=\"s1\">&#39;</span>\n</code></pre></div>\n<p><a href=\"https://help.github.com/articles/changing-author-info\">地址</a>，注意如果你把cm或者am换成中文的，一定要保证脚本文件是utf-8编码的，否则注释中容易出现乱码</p>\n<br/>文章来源： <a href=\"http://jser.me/2013/07/17/Git%E4%BF%AE%E6%94%B9%E5%8E%86%E5%8F%B2%E6%8F%90%E4%BA%A4%E7%9A%84%E4%BF%A1%E6%81%AF.html\">Git修改历史提交的信息</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#git\" class=\"tag\">git</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "介绍js-assessment "
+            ],
+            "link": [
+              "http://jser.me/2013/03/30/%E4%BB%8B%E7%BB%8Djs-assessment.html"
+            ],
+            "guid": [
+              "http://jser.me/2013/03/30/介绍js-assessment"
+            ],
+            "pubDate": [
+              "Sat, 30 Mar 2013 00:00:00 -0700"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<h2>js-assessment简介</h2>\n\n<p><a href=\"https://github.com/rmurphey/js-assessment\">js-assessment</a>是一个帮助你通过写单元测试来学习js的小项目，这是一个非常有意思的东西，建议你花时间把这个做完，肯定受益匪浅。</p>\n\n<h2>怎么玩</h2>\n\n<p>需要你的电脑上有nodejs环境</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"nx\">git</span> <span class=\"nx\">clone</span> <span class=\"nx\">https</span><span class=\"o\">:</span><span class=\"c1\">//github.com/rmurphey/js-assessment.git</span>\n<span class=\"nx\">cd</span> <span class=\"nx\">js</span><span class=\"o\">-</span><span class=\"nx\">assessment</span>\n<span class=\"nx\">npm</span> <span class=\"nx\">install</span> \n<span class=\"nx\">node</span> <span class=\"nx\">bin</span><span class=\"o\">/</span><span class=\"nx\">serve</span>\n</code></pre></div>\n<p>接着打开你的浏览器访问 http://localhost:4444</p>\n\n<p>然后用你的编辑器到目录app下去编辑每个文件，刷新浏览器，使所有的测试用命都能通过。</p>\n\n<p>如果你实在看不懂英文描述那些方法要求的实现结果，可以到tests目录下的app里看每个测试用例是怎么写的，可以学到不少东西，当然不要作弊啊</p>\n\n<h2>学到的一些东西</h2>\n\n<ul>\n<li>BDD方式开发程序挺有趣的</li>\n<li>单纯针对语言特性的单元测试很简单</li>\n<li>两个递归的小例子很好玩</li>\n<li>写测试用例要覆盖全面，包括一些不常见的情况和边界情况</li>\n<li>mocha写测试用例很爽</li>\n<li>好的实现方式也更容易测试，比如异步的时候使用promise模式</li>\n</ul>\n\n<h2>答案</h2>\n\n<p>是题就会有答案，当然也只是参考答案，没有绝对答案的，<a href=\"https://github.com/rmurphey/js-assessment-answers\">项目自带的</a>、<a href=\"https://github.com/jserme/js-assessment/tree/master/app\">小哥我做的</a></p>\n\n<h2>总结</h2>\n\n<p>完成它和写这个文章相距的时间有点长，当时的有些感悟都忘记了。。。所以，以后还是想到了，直接就写，google reader要关闭了，多写了点文章吧。</p>\n<br/>文章来源： <a href=\"http://jser.me/2013/03/30/%E4%BB%8B%E7%BB%8Djs-assessment.html\">介绍js-assessment</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#javascript\" class=\"tag\">javascript</a>  <a href=\"http://jser.me/tag.html#单元测试\" class=\"tag\">单元测试</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "IE下动态修改a元素的链接属性导致元素内文本同时修改的问题 "
+            ],
+            "link": [
+              "http://jser.me/2013/01/10/IE%E4%B8%8B%E5%8A%A8%E6%80%81%E4%BF%AE%E6%94%B9a%E5%85%83%E7%B4%A0%E7%9A%84%E9%93%BE%E6%8E%A5%E5%B1%9E%E6%80%A7%E5%AF%BC%E8%87%B4%E5%85%83%E7%B4%A0%E5%86%85%E6%96%87%E6%9C%AC%E5%90%8C%E6%97%B6%E4%BF%AE%E6%94%B9%E7%9A%84%E9%97%AE%E9%A2%98.html"
+            ],
+            "guid": [
+              "http://jser.me/2013/01/10/IE下动态修改a元素的链接属性导致元素内文本同时修改的问题"
+            ],
+            "pubDate": [
+              "Thu, 10 Jan 2013 00:00:00 -0800"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<h2>问题描述</h2>\n\n<p>IE全系列下，如果链接文本和链接的href属性一样，使用js修改链接的href属性，链接内的文本也会立刻改变为新修改的href。</p>\n\n<h3>注意:</h3>\n\n<ul>\n<li>这里如果链接文本前后有空格这个也是会发生的，应该是trim后对比。</li>\n<li>不管是用户的直接的点击操作，还是onload触发的，只要满足链接和文本trim后一样，都会产生这个问题</li>\n</ul>\n\n<h2>猜测</h2>\n\n<p>没有在网上搜到IE的官方资料（如果哪位搜到了，麻烦告诉一下），猜测是IE为了防止钓鱼链接特地加了这个特性。</p>\n\n<h2>解决办法</h2>\n\n<p>很简单，改变属性之前记录一下原有的href，然后改变属性后再恢复</p>\n\n<h2>例子</h2>\n\n<p>下面是一个超级完整的，包括了bug重现及修复的方法\n<a href=\"/demos/1357799891454_iehrefreset.html\">iehrefreset.html</a></p>\n<br/>文章来源： <a href=\"http://jser.me/2013/01/10/IE%E4%B8%8B%E5%8A%A8%E6%80%81%E4%BF%AE%E6%94%B9a%E5%85%83%E7%B4%A0%E7%9A%84%E9%93%BE%E6%8E%A5%E5%B1%9E%E6%80%A7%E5%AF%BC%E8%87%B4%E5%85%83%E7%B4%A0%E5%86%85%E6%96%87%E6%9C%AC%E5%90%8C%E6%97%B6%E4%BF%AE%E6%94%B9%E7%9A%84%E9%97%AE%E9%A2%98.html\">IE下动态修改a元素的链接属性导致元素内文本同时修改的问题</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#ie\" class=\"tag\">ie</a>  <a href=\"http://jser.me/tag.html#bug\" class=\"tag\">bug</a>  <a href=\"http://jser.me/tag.html#javascript\" class=\"tag\">javascript</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "Express2.X迁移至3.X注意事项 "
+            ],
+            "link": [
+              "http://jser.me/2012/12/10/Express2.X%E8%BF%81%E7%A7%BB%E8%87%B33.X%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9.html"
+            ],
+            "guid": [
+              "http://jser.me/2012/12/10/Express2.X迁移至3.X注意事项"
+            ],
+            "pubDate": [
+              "Mon, 10 Dec 2012 00:00:00 -0800"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<p>这些是我在迁移中遇到的一些问题和解决办法，其实<a href=\"https://github.com/visionmedia/express/wiki/Migrating-from-2.x-to-3.x\">这里</a>有一个更详细的。</p>\n\n<p>如果你有迁移时遇到的问题，可以在下面留言，我再补充这个文章。</p>\n\n<h2>应用程序初始化</h2>\n\n<p>这个是比较大，以前的代码是</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"kd\">var</span> <span class=\"nx\">app</span> <span class=\"o\">=</span> <span class=\"nx\">express</span><span class=\"p\">.</span><span class=\"nx\">createServer</span><span class=\"p\">()</span>\n<span class=\"nx\">app</span><span class=\"p\">.</span><span class=\"nx\">listen</span><span class=\"p\">(</span><span class=\"mi\">8080</span><span class=\"p\">);</span>\n</code></pre></div>\n<p>现在改为</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"kd\">var</span> <span class=\"nx\">app</span> <span class=\"o\">=</span> <span class=\"nx\">express</span><span class=\"p\">();</span>\n<span class=\"nx\">require</span><span class=\"p\">(</span><span class=\"s1\">&#39;http&#39;</span><span class=\"p\">).</span><span class=\"nx\">createServer</span><span class=\"p\">(</span><span class=\"nx\">app</span><span class=\"p\">).</span><span class=\"nx\">listen</span><span class=\"p\">(</span><span class=\"mi\">8080</span><span class=\"p\">);</span>\n</code></pre></div>\n<p>详见:<a href=\"http://expressjs.jser.us/api.html#app.listen\">app.listen</a></p>\n\n<h2>模板</h2>\n\n<p>2.0的模板调用方法和3.0有很大区别，所以之前的</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"nx\">app</span><span class=\"p\">.</span><span class=\"nx\">register</span><span class=\"p\">(</span><span class=\"s2\">&quot;.html&quot;</span><span class=\"p\">,</span> <span class=\"nx\">require</span><span class=\"p\">(</span><span class=\"s2\">&quot;jqtpl&quot;</span><span class=\"p\">).</span><span class=\"nx\">express</span><span class=\"p\">);</span>\n</code></pre></div>\n<p>这样的使用方法是不能用了</p>\n\n<p><a href=\"\">3.0</a>的文档里推荐了使用一个小模块<a href=\"https://github.com/visionmedia/consolidate.js\">consolidate.js</a>来处理。</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"kd\">var</span> <span class=\"nx\">engines</span> <span class=\"o\">=</span> <span class=\"nx\">require</span><span class=\"p\">(</span><span class=\"s1\">&#39;consolidate&#39;</span><span class=\"p\">);</span>\n<span class=\"nx\">app</span><span class=\"p\">.</span><span class=\"nx\">engine</span><span class=\"p\">(</span><span class=\"s1\">&#39;html&#39;</span><span class=\"p\">,</span> <span class=\"nx\">engines</span><span class=\"p\">.</span><span class=\"nx\">jqtpl</span><span class=\"p\">);</span>\n</code></pre></div>\n<p>同时由于去掉了res里的layout属性，你的网站可能显示不正常了，如果你需要支持layout，需要使用<a href=\"https://github.com/publicclass/express-partials\">express-partials</a></p>\n\n<p>PS：推荐你直接使用jade吧，用jade的extend、block和include在模板里控制模板自己的继承和包含会感觉更爽。</p>\n\n<h2>错误处理</h2>\n\n<p>2.x的时候使用的形式是</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"nx\">app</span><span class=\"p\">.</span><span class=\"nx\">error</span> <span class=\"o\">=</span> <span class=\"kd\">function</span><span class=\"p\">(</span><span class=\"nx\">fn</span><span class=\"p\">){</span>\n  <span class=\"k\">this</span><span class=\"p\">.</span><span class=\"nx\">use</span><span class=\"p\">(</span><span class=\"kd\">function</span><span class=\"p\">(</span><span class=\"nx\">err</span><span class=\"p\">,</span> <span class=\"nx\">req</span><span class=\"p\">,</span> <span class=\"nx\">res</span><span class=\"p\">,</span> <span class=\"nx\">next</span><span class=\"p\">){</span>\n    <span class=\"nx\">fn</span><span class=\"p\">.</span><span class=\"nx\">apply</span><span class=\"p\">(</span><span class=\"k\">this</span><span class=\"p\">,</span> <span class=\"nx\">arguments</span><span class=\"p\">);</span>\n  <span class=\"p\">});</span>\n<span class=\"p\">};</span>\n</code></pre></div>\n<p>现在是完全中间件形式，只是多一个参数，你也可以看看<a href=\"http://expressjs.jser.us/guide.html#error-handling\">这里</a></p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"nx\">app</span><span class=\"p\">.</span><span class=\"nx\">use</span><span class=\"p\">(</span><span class=\"kd\">function</span><span class=\"p\">(</span><span class=\"nx\">err</span><span class=\"p\">,</span> <span class=\"nx\">req</span><span class=\"p\">,</span> <span class=\"nx\">res</span><span class=\"p\">,</span> <span class=\"nx\">next</span><span class=\"p\">){</span>\n  <span class=\"nx\">res</span><span class=\"p\">.</span><span class=\"nx\">send</span><span class=\"p\">(</span><span class=\"mi\">500</span><span class=\"p\">,</span> <span class=\"p\">{</span> <span class=\"nx\">error</span><span class=\"o\">:</span> <span class=\"s1\">&#39;something error!&#39;</span> <span class=\"p\">});</span>\n<span class=\"p\">})</span>\n</code></pre></div>\n<h2>模板附加量</h2>\n\n<p>用处比较多，比如在所有的模板上加上用户信息</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"nx\">app</span><span class=\"p\">.</span><span class=\"nx\">dynamicHelpers</span><span class=\"p\">({</span>\n    <span class=\"nx\">user</span> <span class=\"o\">:</span> <span class=\"kd\">function</span><span class=\"p\">(){</span>\n        <span class=\"kd\">var</span> <span class=\"nx\">user</span> <span class=\"o\">=</span> <span class=\"nx\">getUser</span><span class=\"p\">();</span>\n        <span class=\"k\">return</span> <span class=\"nx\">user</span><span class=\"p\">;</span>\n    <span class=\"p\">}</span>   \n<span class=\"p\">})</span>\n</code></pre></div>\n<p>现在必须使用中间件配合app.locals来使用</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"nx\">app</span><span class=\"p\">.</span><span class=\"nx\">use</span><span class=\"p\">(</span><span class=\"kd\">function</span><span class=\"p\">(</span><span class=\"nx\">res</span><span class=\"p\">,</span> <span class=\"nx\">req</span><span class=\"p\">,</span> <span class=\"nx\">next</span><span class=\"p\">){</span>\n    <span class=\"nx\">app</span><span class=\"p\">.</span><span class=\"nx\">locals</span><span class=\"p\">.</span><span class=\"nx\">user</span> <span class=\"o\">=</span> <span class=\"nx\">getUser</span><span class=\"p\">();</span>\n    <span class=\"nx\">next</span><span class=\"p\">()</span>\n<span class=\"p\">})</span>\n</code></pre></div>\n<p>或者</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"nx\">app</span><span class=\"p\">.</span><span class=\"nx\">use</span><span class=\"p\">(</span><span class=\"kd\">function</span><span class=\"p\">(</span><span class=\"nx\">res</span><span class=\"p\">,</span> <span class=\"nx\">req</span><span class=\"p\">,</span> <span class=\"nx\">next</span><span class=\"p\">){</span>\n    <span class=\"nx\">app</span><span class=\"p\">.</span><span class=\"nx\">locals</span><span class=\"p\">({</span>\n        <span class=\"nx\">user</span> <span class=\"o\">:</span> <span class=\"nx\">getUser</span><span class=\"p\">()</span>\n    <span class=\"p\">});</span>\n    <span class=\"nx\">next</span><span class=\"p\">()</span>\n<span class=\"p\">})</span>  \n</code></pre></div>\n<h2>未完待续</h2>\n<br/>文章来源： <a href=\"http://jser.me/2012/12/10/Express2.X%E8%BF%81%E7%A7%BB%E8%87%B33.X%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9.html\">Express2.X迁移至3.X注意事项</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#nodejs\" class=\"tag\">nodejs</a>  <a href=\"http://jser.me/tag.html#javascript\" class=\"tag\">javascript</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "Express3.0中文文档发布 "
+            ],
+            "link": [
+              "http://jser.me/2012/12/02/Express3.0%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%E5%8F%91%E5%B8%83.html"
+            ],
+            "guid": [
+              "http://jser.me/2012/12/02/Express3.0中文文档发布"
+            ],
+            "pubDate": [
+              "Sun, 02 Dec 2012 00:00:00 -0800"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<h2>Express是什么</h2>\n\n<p>如果你玩nodejs而不知道Express的话，那真是相当的out，这是目前nodejs社区最火的快速搭建网站的框架。如我在<a href=\"http://jser.me/p/1a358\">一个全新的Blog</a>里写的，目前你看到这个Blog就是用Express搭建的。</p>\n\n<h2>为啥要翻译文档</h2>\n\n<p>其实这是冲动的惩罚，我用Express已经很久了，有一天（大概是11月6号）忽然心血来潮想翻译一下，然后我就从github上<a href=\"https://github.com/jserme/expressjs.com\">fork</a>了一下，翻译了一点点，还很兴奋的告诉了<a href=\"http://blog.cooer.net/\">几</a><a href=\"http://jingwei.li/blog/\">个</a><a href=\"http://bluehua.org/\">人</a>，鉴于牛皮已经吹出去，骑虎难下，于是，硬着头皮发扬党教育我们的艰苦奋斗作风翻译完了。这也算是造福一下社区吧。这个文档应该是目前国内第一份完整的Express3.0中文文档。</p>\n\n<h2>Show Me The Site!</h2>\n\n<p>抱歉，废话有点多，下面就是中文站的地址，请猛击，狠戳。。。</p>\n\n<p><a href=\"http://expressjs.jser.us\">expressjs中文文档</a></p>\n\n<h2>提交反馈</h2>\n\n<p>你应该点击了上面的链接，并且大概看了几眼吧，悄悄的告诉你，我的英语很烂，肯定有很多狗屁不通的翻译，请一定高抬贵脚，使劲踹我，这个项目放在github上，欢迎fork，欢迎pull request。</p>\n\n<p>也欢迎在<a href=\"http://weibo.com/1826461472/z7DQbaDLq\">微博</a>上和这个<a href=\"http://jser.me\">博客</a>上跟我交流。</p>\n<br/>文章来源： <a href=\"http://jser.me/2012/12/02/Express3.0%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3%E5%8F%91%E5%B8%83.html\">Express3.0中文文档发布</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#nodejs\" class=\"tag\">nodejs</a>  <a href=\"http://jser.me/tag.html#express\" class=\"tag\">express</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "mac下tar压缩文件上传到ubuntu解压时出错 "
+            ],
+            "link": [
+              "http://jser.me/2012/11/18/mac%E4%B8%8Btar%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%88%B0ubuntu%E8%A7%A3%E5%8E%8B%E6%97%B6%E5%87%BA%E9%94%99.html"
+            ],
+            "guid": [
+              "http://jser.me/2012/11/18/mac下tar压缩文件上传到ubuntu解压时出错"
+            ],
+            "pubDate": [
+              "Sun, 18 Nov 2012 00:00:00 -0800"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<p>做Blog的程序自动发布脚本时，本地打包的文件在服务器端解压时报了下面的错</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"nx\">tar</span><span class=\"o\">:</span> <span class=\"nx\">Ignoring</span> <span class=\"nx\">unknown</span> <span class=\"nx\">extended</span> <span class=\"nx\">header</span> <span class=\"nx\">keyword</span> <span class=\"s1\">&#39;SCHILY.dev&#39;</span>\n<span class=\"nx\">tar</span><span class=\"o\">:</span> <span class=\"nx\">Ignoring</span> <span class=\"nx\">unknown</span> <span class=\"nx\">extended</span> <span class=\"nx\">header</span> <span class=\"nx\">keyword</span> <span class=\"s1\">&#39;SCHILY.ino&#39;</span>\n<span class=\"nx\">tar</span><span class=\"o\">:</span> <span class=\"nx\">Ignoring</span> <span class=\"nx\">unknown</span> <span class=\"nx\">extended</span> <span class=\"nx\">header</span> <span class=\"nx\">keyword</span> <span class=\"s1\">&#39;SCHILY.nlink&#39;</span>\n</code></pre></div>\n<p>本机查看一下tar --help发现tar是bsdtar, 服务器上是gnutar，统一一下就行了。    </p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"nx\">sudo</span> <span class=\"nx\">port</span> <span class=\"nx\">install</span> <span class=\"nx\">gnutar</span>\n<span class=\"nx\">which</span> <span class=\"nx\">gnutar</span>  <span class=\"err\">#显示</span> <span class=\"o\">/</span><span class=\"nx\">opt</span><span class=\"o\">/</span><span class=\"nx\">local</span><span class=\"o\">/</span><span class=\"nx\">bin</span><span class=\"o\">/</span><span class=\"nx\">gnutar</span>\n<span class=\"nx\">which</span> <span class=\"nx\">tar</span> <span class=\"err\">#显示</span> <span class=\"o\">/</span><span class=\"nx\">usr</span><span class=\"o\">/</span><span class=\"nx\">bin</span><span class=\"o\">/</span><span class=\"nx\">tar</span>\n<span class=\"nx\">sudo</span> <span class=\"nx\">ln</span> <span class=\"o\">-</span><span class=\"nx\">sF</span> <span class=\"o\">/</span><span class=\"nx\">opt</span><span class=\"o\">/</span><span class=\"nx\">local</span><span class=\"o\">/</span><span class=\"nx\">bin</span><span class=\"o\">/</span><span class=\"nx\">gnutar</span>  <span class=\"o\">/</span><span class=\"nx\">usr</span><span class=\"o\">/</span><span class=\"nx\">bin</span><span class=\"o\">/</span><span class=\"nx\">tar</span>\n</code></pre></div>\n<p>再次使用tar时不再报错了</p>\n<br/>文章来源： <a href=\"http://jser.me/2012/11/18/mac%E4%B8%8Btar%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%88%B0ubuntu%E8%A7%A3%E5%8E%8B%E6%97%B6%E5%87%BA%E9%94%99.html\">mac下tar压缩文件上传到ubuntu解压时出错</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#mac\" class=\"tag\">mac</a>  <a href=\"http://jser.me/tag.html#linux\" class=\"tag\">linux</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "自定义github pages的域名 "
+            ],
+            "link": [
+              "http://jser.me/2012/11/17/%E8%87%AA%E5%AE%9A%E4%B9%89github-pages%E7%9A%84%E5%9F%9F%E5%90%8D.html"
+            ],
+            "guid": [
+              "http://jser.me/2012/11/17/自定义github-pages的域名"
+            ],
+            "pubDate": [
+              "Sat, 17 Nov 2012 00:00:00 -0800"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<h2>什么是github pages</h2>\n\n<p><a href=\"http://pages.github.com/\">github pages</a>是<a href=\"https://github.com\">github</a>提供的免费的存放网页的服务，有了它，你就可以轻松使用静态网页构建一个网站，并且如果你有自己的域名，它可以绑定域名。</p>\n\n<h2>为什么要设置域名</h2>\n\n<p>域名可以说是一个网站的名片，设置域名有利于品牌统一，彰显网站的专业。</p>\n\n<h2>一、在gh-pages分支里建立CNAME文件</h2>\n\n<p>创建gh-pages分支就不介绍了，你可以使用github自带的<a href=\"https://help.github.com/articles/creating-pages-with-the-automatic-generator\">自动化生成器来生成</a>,也可以手动创建一个分支gh-pages，然后推到<a href=\"https://github.com\">github</a>.</p>\n\n<p>为了绑定域名，首先我们在gh-pages这个分支的根目录新建一个CNAME文件，文件内容为你要设置的域名，然后将此文件添加到git中，最后推送到<a href=\"https://github.com\">github</a>上去，推送之后大概需要10分钟才能生效</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"nx\">cat</span> <span class=\"nx\">expressjs</span><span class=\"p\">.</span><span class=\"nx\">jser</span><span class=\"p\">.</span><span class=\"nx\">us</span> <span class=\"o\">&gt;</span> <span class=\"nx\">CNAME</span>\n<span class=\"nx\">git</span> <span class=\"nx\">add</span> <span class=\"p\">.</span>\n<span class=\"nx\">git</span> <span class=\"nx\">commit</span> <span class=\"o\">-</span><span class=\"nx\">a</span> <span class=\"o\">-</span><span class=\"nx\">m</span> <span class=\"s2\">&quot;add CNAME file&quot;</span>\n<span class=\"nx\">git</span> <span class=\"nx\">push</span> <span class=\"nx\">origin</span> <span class=\"nx\">gh</span><span class=\"o\">-</span><span class=\"nx\">pages</span> \n</code></pre></div>\n<h2>二、得到你在github上的二级域名的ip</h2>\n\n<p>这里我们使用一个简单的命令得到我们的二级域名对应的ip，例如我的二级域名是jserme.github.com\n<img src=\"/images/1353148911110_20121117180447.png\" alt=\"20121117180447.png\"></p>\n\n<p>这里可以看到ip是204.232.175.78</p>\n\n<h2>三、设置你的域名dns指向刚才得到的ip</h2>\n\n<p>然后我们在域名控制的地方添加一个A纪录，我的域名基本上都是在godaddy上买的，godaddy上默认的dns经常被墙，所以我把dns换成了国内靠谱的<a href=\"http://dnspod.cn\">dnspod.cn</a>。如下设置\n<img src=\"/images/1353149138934_20121117181954.png\" alt=\"20121117181954.png\"></p>\n\n<p>正常情况下，几分钟就可以访问了，例如你现在可以访问<a href=\"http://expressjs.jser.us\">expressjs的中文站点</a>。</p>\n<br/>文章来源： <a href=\"http://jser.me/2012/11/17/%E8%87%AA%E5%AE%9A%E4%B9%89github-pages%E7%9A%84%E5%9F%9F%E5%90%8D.html\">自定义github pages的域名</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#github\" class=\"tag\">github</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "mac里设置ssh允许远程访问本机 "
+            ],
+            "link": [
+              "http://jser.me/2012/11/17/mac%E9%87%8C%E8%AE%BE%E7%BD%AEssh%E5%85%81%E8%AE%B8%E8%BF%9C%E7%A8%8B%E8%AE%BF%E9%97%AE%E6%9C%AC%E6%9C%BA.html"
+            ],
+            "guid": [
+              "http://jser.me/2012/11/17/mac里设置ssh允许远程访问本机"
+            ],
+            "pubDate": [
+              "Sat, 17 Nov 2012 00:00:00 -0800"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<p>说来惭愧，我一直从用mac ssh连接到远程的服务器上或者工作用的ubuntu上，基本上从来没有从别的机器连接到我的这台mac pro上，突然有了这个需求却发现却发现远程连不上。搜了一通，记录一下。</p>\n\n<p>打开系统偏好设置--》 共享 --》勾选远程登录， 如图\n<img src=\"/images/1353150847737_20121117190319.jpg\" alt=\"20121117190319.jpg\"></p>\n<br/>文章来源： <a href=\"http://jser.me/2012/11/17/mac%E9%87%8C%E8%AE%BE%E7%BD%AEssh%E5%85%81%E8%AE%B8%E8%BF%9C%E7%A8%8B%E8%AE%BF%E9%97%AE%E6%9C%AC%E6%9C%BA.html\">mac里设置ssh允许远程访问本机</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#mac\" class=\"tag\">mac</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "验证码及其它 "
+            ],
+            "link": [
+              "http://jser.me/2012/11/04/%E9%AA%8C%E8%AF%81%E7%A0%81%E5%8F%8A%E5%85%B6%E5%AE%83.html"
+            ],
+            "guid": [
+              "http://jser.me/2012/11/04/验证码及其它"
+            ],
+            "pubDate": [
+              "Sun, 04 Nov 2012 00:00:00 -0700"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<p><img src=\"/images/1351954618967_verifyCode.jpg\" alt=\"verifyCode.jpg\"></p>\n\n<h2>事出有因</h2>\n\n<p>PS：第一次给博客配个图，哈哈，庆祝一下，奖励自己一个芥末豆，不要怀疑自己的眼睛有问题或者屏幕不清楚，这个图只是高斯模糊了一下。</p>\n\n<p>有些日子没有更新博客和它的代码，今天打开后台一看，我了个去，垃圾评论一堆，看来拖了好久的验证码必须得奉上了。倒腾了一会加了一个计算十以内的四则运算，这应该能防住绝大部分的垃圾评论，我也肯定我这个博客还没有大到值得有人取到这个表达式再计算再发送的地步。</p>\n\n<p>先来吐糟一下在我的博客上疯狂发垃圾评论的这个机器人，这是一个相当的2B的机器人，一般来讲，发垃圾评论的目的都是推广评论内容中的链接，提高外链，或者直接引诱点击（需要支持html），这个机器人傻就傻在发的链接根本不可点击的嘛，并且发的时候连IP都不带换的，还在不停的发，这在精准营销已经深入人心的年代显得太不专业了。</p>\n\n<p>当然它的好处就在于触发了我对验证码的一些思考和总结，趁着这个热乎劲，写点关于验证码和它相关的一些事情</p>\n\n<h2>各种各样的验证码</h2>\n\n<p>相信混迹于互联网的朋友们对于验证码一定非常熟悉，通常情况下它是个图片比如下面的</p>\n\n<p><img src=\"https://omeo.alipay.com/service/checkcode?sessionID=e02e155fd65141366523232\" alt=\"支付宝的验证码\"></p>\n\n<p>也有下面这样带点花纹(专业点可以叫防识别噪音)</p>\n\n<p><img src=\"http://icode.renren.com/getcode.do?t=web_login&amp;rnd=0.8289272137917578\" alt=\"人人网验证码\"></p>\n\n<p>也有在你输入验证码的时候就做为<code>人类文明</code>做好事的reCAPTCHA，不要怀疑，有些时候你确实有这么伟大</p>\n\n<p><img src=\"/images/1352004993050_reCAPTCHA.jpg\" alt=\"reCAPTCHA.jpg\"></p>\n\n<p>也有精明且操蛋的把验证码放入广告的，如下，具体的可以看一下某国内某知名下载站</p>\n\n<p><img src=\"/images/1352005167853_%E5%B9%BF%E5%91%8A%E9%AA%8C%E8%AF%81%E7%A0%81.jpg\" alt=\"广告验证码.jpg\"></p>\n\n<p>还有向你手机发送短信的验证码，经常使用支付宝网购的朋友这个应该很熟悉，特别是当你点了发送验证码的时候，过了好久好久，短信都没有收到，有没有一种对这个码产生非常强烈的厌恶的思想感情？我懂你的，因为我是经常收不到</p>\n\n<p><img src=\"/images/1352005728932_%E7%9F%AD%E4%BF%A1%E9%AA%8C%E8%AF%81%E7%A0%81.jpg\" alt=\"短信验证码.jpg\"></p>\n\n<h2>验证码出现的原因</h2>\n\n<p>引用<a href=\"http://zh.wikipedia.org/wiki/%E9%AA%8C%E8%AF%81%E7%A0%81\">维基百科</a></p>\n\n<blockquote>\n<p>全自动区分计算机和人类的图灵测试（英语：Completely Automated Public Turing test to tell Computers and Humans Apart，简称CAPTCHA），俗称验证码，是一种区分用户是计算机和人的公共全自动程序。在CAPTCHA测试中，作为服务器的计算机会自动生成一个问题由用户来解答。这个问题可以由计算机生成并评判，但是必须只有人类才能解答。由于计算机无法解答CAPTCHA的问题，所以回答出问题的用户就可以被认为是人类。</p>\n</blockquote>\n\n<p>一句话，验证码就是为了判断当前操作者是不是人。手机短信验证码更多的是为了判断操作者是不是本人。</p>\n\n<p>举个栗子：某网站A有大量的用户，一个小网站B用户量不是很多，小网站B想在网站A上做宣传推广，这时候B有可以选择网站A的广告服务，也可以选择花钱购买或者自己编写程序在Ａ网站上大量发信息。选择广告服务，意味着这是一个长期性的消耗投资，选择代码则是在Ａ网站不升级的情况下的一次性投资，并且两者之间巨大的金钱差距也会使很多人选择程序的方案，验证码就是为了防止程序的情况。</p>\n\n<h2>验证码前后的技术细节</h2>\n\n<p>验证码的程序逻辑并不复杂</p>\n\n<ol>\n<li><p>客户端请求的时候服务器生成一个验证码，以某种格式（通常是图片）返回一个跟这个验证码相关的东西，同时服务器端有一个标识对应此次请求的客户端。</p></li>\n<li><p>客户端接收到图片，用户识别，并且输入 </p></li>\n<li><p>客户端再次请求时带上用户输入的验证码，服务器收到这个码，并取到客户端标识，以此标识找到服务器端的码并与客户端发来的码对比</p></li>\n</ol>\n\n<p>这个唯一标识在服务器端和客户端的解决方案通常是Session，客户端对应的是一个session_key，一般以cookie的形式存在。</p>\n\n<h2>验证码的攻与防</h2>\n\n<p>验证码相当于是服务器的一个盾，用来挡住机器人（程序），当然盾也有挡不住的时候。</p>\n\n<p>我们假设有一个4位的数字和大小写字母混合的验证码，它是很规律的一个字符一个字符排开的，这个就是最好破解的</p>\n\n<ol>\n<li>取一个验证码图片，按照一个字符一个字符的宽度拆成4份，每个小图片对应一个字符</li>\n<li>重复步骤1，直到取到所有的0-9、a-z、A-Z的所有字符的所有图片</li>\n<li>步骤1和步骤2完成了，就相当于我们知道了所有字符的样子，接下来就是对比，下次再取得一个验证码，我们就先拆，然后用已经知道的字符图片去逐个对比，最终就能知道这个图片对应的字符是什么</li>\n</ol>\n\n<p>以上是一个最简单的验证码破解思路，专业点叫模板匹配，当然这个防起来也最简单，首先生成图片的时候每个字符旋转一定的角度，同时字符之间的宽度不固定，再加上各种噪音小条纹上面的思路基本上无法破解。</p>\n\n<p>例如这个</p>\n\n<p><img src=\"http://icode.renren.com/getcode.do?t=web_login&amp;rnd=0.8289272137917578\" alt=\"人人网验证码\"></p>\n\n<p>它就无法破解了么，别怕，我们有非常NB的技术，并且这个技术是一个很正面的很阳光的技术<a href=\"http://en.wikipedia.org/wiki/Optical_character_recognition\">OCR</a>，这个再详细点我也不懂，相当专业，已经有一些<a href=\"http://www.opencv.org.cn/\">开源的库</a>可供调用，但是这个识别也经常出问题</p>\n\n<p>那么好吧，有终极大招，人肉识别法。在考虑时间成本和收益允许的情况下，可以真人上阵，一个表单别的项由机器输入，仅仅是在验证码的时候由人工输入，这样验证码也是无能为力了。</p>\n\n<h2>更好的验证码</h2>\n\n<p>让我们来回归验证码的初衷，它是为了保证当前操作是真人，一些情况下需要是本人，当前的这些验证码确实能够保证，但是它们足够好吗？首先来说一下reCAPTCHA，它确实是在做好事，但是我一直觉得它很难用，多次给我的图像是我完全识别不了的，我也很为我的智商捉急，但是你不能让我卡在登录处啊；然后是那个操蛋的广告加验证码，本来用户是想快速结束这次操作的，它倒是不紧不慢，分秒必争的放广告，这样不是惹来反感么？我向来觉得广告是应该放在无聊时间段和它该出现的时刻，比如等电梯时，而广告验证码这种在拦截操作时放广告的行为2的很彻底。</p>\n\n<p>最好的验证码应该是不用验证码，如果有更好的身份认证技术手段，比如语音识别或者做一某个动作识别，那验证码甚至用户名密码都没有存在的必要了。</p>\n<br/>文章来源： <a href=\"http://jser.me/2012/11/04/%E9%AA%8C%E8%AF%81%E7%A0%81%E5%8F%8A%E5%85%B6%E5%AE%83.html\">验证码及其它</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#验证码\" class=\"tag\">验证码</a>  <a href=\"http://jser.me/tag.html#技术\" class=\"tag\">技术</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "吃在太阳宫凯德mall地下一层 "
+            ],
+            "link": [
+              "http://jser.me/2012/10/02/%E5%90%83%E5%9C%A8%E5%A4%AA%E9%98%B3%E5%AE%AB%E5%87%AF%E5%BE%B7mall%E5%9C%B0%E4%B8%8B%E4%B8%80%E5%B1%82.html"
+            ],
+            "guid": [
+              "http://jser.me/2012/10/02/吃在太阳宫凯德mall地下一层"
+            ],
+            "pubDate": [
+              "Tue, 02 Oct 2012 00:00:00 -0700"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<h2>碰到好吃的</h2>\n\n<p>今天去宜家转了转，回来的的时候饿了，正好路过凯德，进去转了转，按照一般的经历，这种商场顶楼或者地下一般都是吃的，凯德的是在地下。</p>\n\n<p>下楼绕了一下，发现一个画的很好看的煎饼，对于吃我还是相当的外貌协会的，要了一个火腿煎饼果子，办了一个卡，然后看着店员MM在那做</p>\n\n<h2>真相大曝光</h2>\n\n<p>下面这个图是刚加了鸡蛋时的样子，后来看到MM加生菜和沙拉时，才意识到这尼玛是个混血煎饼啊。\n<img src=\"/images/1349182821053_IMG_0040.png\" alt=\"IMG_0040.png\"></p>\n\n<p>然后又逛到了烧卖和内脂豆腐羹，下面是它们的大合影，（注：我是一个人吃的，筷子多拿了。。。）\n<img src=\"/images/1349182804897_IMG_0041.png\" alt=\"IMG_0041.png\"></p>\n\n<h2>吃后有感</h2>\n\n<p>这几个东西都很便宜，并且相当的好吃，特地写一篇记录一下。煎饼咬起来很脆，还有蔬菜沙拉的气息；烧卖中规中矩；内脂豆腐羹是胡辣汤和紫菜鸡蛋汤的合体，由于小时候吃胡辣汤太多，有一种穿越的感觉，几样东西下肚，顿时觉得人格得到了升华，以后此地要常来。</p>\n<br/>文章来源： <a href=\"http://jser.me/2012/10/02/%E5%90%83%E5%9C%A8%E5%A4%AA%E9%98%B3%E5%AE%AB%E5%87%AF%E5%BE%B7mall%E5%9C%B0%E4%B8%8B%E4%B8%80%E5%B1%82.html\">吃在太阳宫凯德mall地下一层</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#吃\" class=\"tag\">吃</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "BFcache是什么东西 "
+            ],
+            "link": [
+              "http://jser.me/2012/09/22/BFcache%E6%98%AF%E4%BB%80%E4%B9%88%E4%B8%9C%E8%A5%BF.html"
+            ],
+            "guid": [
+              "http://jser.me/2012/09/22/BFcache是什么东西"
+            ],
+            "pubDate": [
+              "Sat, 22 Sep 2012 00:00:00 -0700"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<h2>扯点闲</h2>\n\n<p>作为一个前端，居然是最近才知道这个东西，真的是老了，好奇心也降低了。</p>\n\n<h2>BFCache简介</h2>\n\n<p>BFCache（Back-Forward Cache）可以翻译成往返缓存。这是火狐用来加速前进后退操作\n时页面展示时使用的一种技术。</p>\n\n<h2>阻止BFCache</h2>\n\n<p><a href=\"https://developer.mozilla.org/en-US/docs/Using_Firefox_1.5_caching\">MDN里</a>里说到有下面几种方式可以阻止，同时我们也可以看出是从火狐1.5开始，它有这个技术的</p>\n\n<ul>\n<li>页面监听了 unload 或者 beforeunload 事件;</li>\n<li>页面设置了 &quot;cache-control: no-store&quot;.</li>\n<li>网站使用 HTTPS 同时页面至少满足以下一个条件:\n\n<ul>\n<li>&quot;Cache-Control: no-cache&quot;</li>\n<li>&quot;Pragma: no-cache&quot;</li>\n<li>设置请求头 &quot;Expires: 0&quot; 或者 &quot;Expires&quot; 的值为 &quot;Date&quot; 之前的值 (除非 &quot;Cache-Control: max-age=&quot; 也被设置了);</li>\n</ul></li>\n<li>页面在用户前进后退的时候还没有完全加载完或者它有正在进行的网络请求,比如 XMLHttpRequest;</li>\n<li>页面正在进行IndexedDB操作;</li>\n<li>顶层的页面包含有frame,并且这些frame由于这里列的任何一条原因而不能被缓存;</li>\n<li>页面在一个frame内，并且用户在这个frame内跳转到了一个新的网页,这里将被缓存的是新载入的网页</li>\n</ul>\n\n<h2>怎么查看</h2>\n\n<p>在firebug的net选项卡，点击那个向下的小箭头，会有一个show BFCache Response选项，选中它即可。在这个任意页面点击链接，然后点击导航栏的前进后退，你就能看到net下面的请求列表里类似“200 OK (BFCache)”这样的请求, then u got it。</p>\n\n<h2>书上说，网上说</h2>\n\n<p>《Javascript高级程序设计》这本书里讲到这个缓存不仅保存页面数据，还保存了DOM和JS的状态，整个页面会保存在内存中。</p>\n\n<p>同时如果页面是位于BFCache中，那么再次打开该页面时不会触发load事件</p>\n\n<p>火狐的<a href=\"https://developer.mozilla.org/en-US/docs/Working_with_BFCache\">MDN里</a>说到如果页面是从BFCache里取到的，Dom和js对象以及setTimeout,setInterval这些都是上一次访问时的状态。</p>\n\n<p>也就是说如下的代码在前进后退页面时，这个i会不停的增加, 同时“I am loaded”这句只会出现一次。</p>\n<div class=\"highlight\"><pre><code class=\"javascript language-javascript\" data-lang=\"javascript\"><span class=\"p\">(</span><span class=\"kd\">function</span><span class=\"p\">(){</span>\n    <span class=\"kd\">var</span> <span class=\"nx\">i</span> <span class=\"o\">=</span> <span class=\"mi\">0</span><span class=\"p\">;</span>\n\n    <span class=\"nb\">window</span><span class=\"p\">.</span><span class=\"nx\">addEventListener</span><span class=\"p\">(</span><span class=\"s1\">&#39;pageshow&#39;</span><span class=\"p\">,</span> <span class=\"kd\">function</span><span class=\"p\">(){</span>\n        <span class=\"nx\">alert</span><span class=\"p\">(</span><span class=\"nx\">i</span><span class=\"o\">++</span><span class=\"p\">);</span>\n        <span class=\"nx\">alert</span><span class=\"p\">(</span><span class=\"s1\">&#39;I am loaded&#39;</span><span class=\"p\">);</span>\n    <span class=\"p\">})</span>\n\n    <span class=\"nb\">window</span><span class=\"p\">.</span><span class=\"nx\">addEventListener</span><span class=\"p\">(</span><span class=\"s1\">&#39;load&#39;</span><span class=\"p\">,</span> <span class=\"kd\">function</span><span class=\"p\">(){</span>\n        <span class=\"nx\">alert</span><span class=\"p\">(</span><span class=\"s1\">&#39;I am loaded&#39;</span><span class=\"p\">);</span>\n    <span class=\"p\">})</span>\n<span class=\"p\">})</span>\n</code></pre></div>\n<p>那么事实是这样么？</p>\n\n<p>访问<a href=\"/demos/1348316191370_bfcache.html\">这个页面</a>，在火狐（14.0.1 Mac）下i始终都是0,同时每次都会触发load事件,在firebug里看确实是从BFCache里取的，最奇葩的是persisted始终都是false。</p>\n\n<p>同时书上说safari、opera、chrome都是支持这个的，但是从这个简单的页面上来看，最新的opera(12.02 Mac)压根没有pageshow/pagehide这两个事件，safari和chrome和支持这个事件，但是跟火狐的效果是一样的。</p>\n\n<h2>真相是什么？</h2>\n\n<p>毁了三观么，还没有 :)，我猜测是火狐在开发过程中发现，保存js和Dom状态这事有点像是热心办了坏事，还弄得开发者多加些逻辑，后来就索性，不再保存js和Dom状态，只是存资源(html内容，css，js...)，这样呢，开发者只要还继续用load/unload事件就能万事大吉。至于《Javascritp高级程序设计》的错误，书始终是前端界的好书，出书的时候这玩意还是正常的。</p>\n\n<h2>参考链接们：</h2>\n\n<ul>\n<li>《javascript高级程序设计》第三版 第393页到394页</li>\n<li>https://developer.mozilla.org/en-US/docs/Using<em>Firefox</em>1.5_caching</li>\n<li>https://developer.mozilla.org/en-US/docs/Working<em>with</em>BFCache</li>\n<li>http://www.softwareishard.com/blog/firebug/firebug-tip-what-the-heck-is-bfcache/</li>\n</ul>\n<br/>文章来源： <a href=\"http://jser.me/2012/09/22/BFcache%E6%98%AF%E4%BB%80%E4%B9%88%E4%B8%9C%E8%A5%BF.html\">BFcache是什么东西</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#firefox\" class=\"tag\">firefox</a>  <a href=\"http://jser.me/tag.html#bfcache\" class=\"tag\">bfcache</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "页面性能的几个评测点 "
+            ],
+            "link": [
+              "http://jser.me/2012/08/03/%E9%A1%B5%E9%9D%A2%E6%80%A7%E8%83%BD%E7%9A%84%E5%87%A0%E4%B8%AA%E8%AF%84%E6%B5%8B%E7%82%B9.html"
+            ],
+            "guid": [
+              "http://jser.me/2012/08/03/页面性能的几个评测点"
+            ],
+            "pubDate": [
+              "Fri, 03 Aug 2012 00:00:00 -0700"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<p>页面性能评测还是时间第一，细化了可以分为下面的几个</p>\n\n<ol>\n<li><p>加载时间</p>\n\n<ul>\n<li>从在浏览器里按下回车键到页面开始出现的时间，相同站点在不同浏览器下这个时间会有所不同</li>\n<li>触发浏览器onload事件的时间</li>\n<li>所有资源下载完毕的时间</li>\n</ul></li>\n<li><p>资源</p>\n\n<ul>\n<li>所有的请求数</li>\n<li>图片/css/javascript的大小</li>\n<li>网页（html）的大小</li>\n<li>异步请求的数量</li>\n<li>坏请求的数量(重定向，服务器端错误等等)</li>\n</ul></li>\n<li><p>网络</p>\n\n<ul>\n<li>DNS时间（查找域名对应的服务器IP耗费的时间）</li>\n<li>连接时间 （向服务器发起连接时间）</li>\n<li>服务器时间 （服务器端处理请求的耗费时间）</li>\n<li>传输时间 （由服务器向客户端传输资源耗费时间）</li>\n<li>等待时间 （同时向一个服务器请求的连接数量是有限制的，获取资源时的等待空闲连接的时间）</li>\n</ul></li>\n</ol>\n\n<p>以上关键点互相之间相辅相成，二和三决定了一的时间，另外，交互复杂的网站，很多资源的请求是在用户操作的情况下发起的，这些单个的请求也同样可以用上样的关键点进行评测。</p>\n<br/>文章来源： <a href=\"http://jser.me/2012/08/03/%E9%A1%B5%E9%9D%A2%E6%80%A7%E8%83%BD%E7%9A%84%E5%87%A0%E4%B8%AA%E8%AF%84%E6%B5%8B%E7%82%B9.html\">页面性能的几个评测点</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#frontend\" class=\"tag\">frontend</a>  <a href=\"http://jser.me/tag.html#Performance\" class=\"tag\">Performance</a>  <a href=\"http://jser.me/tag.html#web\" class=\"tag\">web</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "装个漂亮点的编程字体 "
+            ],
+            "link": [
+              "http://jser.me/2012/08/03/%E8%A3%85%E4%B8%AA%E6%BC%82%E4%BA%AE%E7%82%B9%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AD%97%E4%BD%93.html"
+            ],
+            "guid": [
+              "http://jser.me/2012/08/03/装个漂亮点的编程字体"
+            ],
+            "pubDate": [
+              "Fri, 03 Aug 2012 00:00:00 -0700"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<p>写代码最重要的还是区分0o,li1这些，字体再好看点就更好了</p>\n\n<p>目前我用的是Monaco感觉很不错哦</p>\n\n<p><a href=\"http://www.gringod.com/wp-upload/MONACO.TTF\">下载地址</a>\n<a href=\"http://www.gringod.com/2006/02/24/return-of-monacottf/\">来源</a></p>\n\n<p>安装</p>\n<div class=\"highlight\"><pre><code class=\"bash language-bash\" data-lang=\"bash\">cp MONACO.ttf /usr/share/fonts/truetype/\n<span class=\"nb\">fc</span>-cache -f -v\n</code></pre></div>\n<p>这里有一个程序员喜欢的字体的大全  http://www.kuro5hin.org/story/2004/12/6/11739/5249\n这是<a href=\"http://www.2maomao.com/blog/wp-content/uploads/best%20programming%20fonts.png\">大图展示</a></p>\n<br/>文章来源： <a href=\"http://jser.me/2012/08/03/%E8%A3%85%E4%B8%AA%E6%BC%82%E4%BA%AE%E7%82%B9%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AD%97%E4%BD%93.html\">装个漂亮点的编程字体</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#font\" class=\"tag\">font</a>  <a href=\"http://jser.me/tag.html#linux\" class=\"tag\">linux</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "定时备份mysql "
+            ],
+            "link": [
+              "http://jser.me/2012/08/03/%E5%AE%9A%E6%97%B6%E5%A4%87%E4%BB%BDmysql.html"
+            ],
+            "guid": [
+              "http://jser.me/2012/08/03/定时备份mysql"
+            ],
+            "pubDate": [
+              "Fri, 03 Aug 2012 00:00:00 -0700"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<p>说来惭愧，周报系统距离上一个版本已经很久没有动过了，实在是太TMD忙了，闲下来一会就什么也不想干了，我是堕落了吗？</p>\n\n<p>居然一直傻傻的使用phpmyadmin手工来备份，“脑残”呀。。。。</p>\n\n<p>mysql自带了一个mysqldump专门用来备份的，下面两行将会生成一个fed<em>2011</em>02_20.sql这种形式的文件，当然也可以再tar打个包</p>\n<div class=\"highlight\"><pre><code class=\"bash language-bash\" data-lang=\"bash\"><span class=\"nv\">filename</span><span class=\"o\">=</span><span class=\"s1\">&#39;fed_&#39;</span><span class=\"sb\">`</span>date +%Y_%m_%d<span class=\"sb\">`</span><span class=\"s1\">&#39;.sql&#39;</span>\nmysqldump -u root -pjser fed &gt; ~/fedbackups/<span class=\"nv\">$filename</span>\n</code></pre></div>\n<p>其中fed是一个库，mysqldump的常用如下：</p>\n<div class=\"highlight\"><pre><code class=\"bash language-bash\" data-lang=\"bash\">Usage: mysqldump <span class=\"o\">[</span>OPTIONS<span class=\"o\">]</span> database <span class=\"o\">[</span>tables<span class=\"o\">]</span>\nOR     mysqldump <span class=\"o\">[</span>OPTIONS<span class=\"o\">]</span> --databases <span class=\"o\">[</span>OPTIONS<span class=\"o\">]</span> DB1 <span class=\"o\">[</span>DB2 DB3...<span class=\"o\">]</span>\nOR     mysqldump <span class=\"o\">[</span>OPTIONS<span class=\"o\">]</span> --all-databases <span class=\"o\">[</span>OPTIONS<span class=\"o\">]</span>\n</code></pre></div>\n<p>更多详细用法请直接mysqldump --help</p>\n\n<p>服务器使用的是linux,加入定时任务</p>\n<div class=\"highlight\"><pre><code class=\"bash language-bash\" data-lang=\"bash\">jser@fed:~<span class=\"nv\">$ </span>crontab -e\n55 23 * * 0 sh ~/fedback.sh   <span class=\"c\">#周日23点55分备份</span>\n</code></pre></div>\n<p>windows下面可以写一个批处理脚本，然后加入计划任务中，大同小异，不再多说</p>\n<br/>文章来源： <a href=\"http://jser.me/2012/08/03/%E5%AE%9A%E6%97%B6%E5%A4%87%E4%BB%BDmysql.html\">定时备份mysql</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#linux\" class=\"tag\">linux</a>  <a href=\"http://jser.me/tag.html#mysql\" class=\"tag\">mysql</a>  <a href=\"http://jser.me/tag.html#mysql\" class=\"tag\">mysql</a>  <a href=\"http://jser.me/tag.html#backup\" class=\"tag\">backup</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "字符串转为json的几种方式对比 "
+            ],
+            "link": [
+              "http://jser.me/2012/08/03/%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E4%B8%BAjson%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F%E5%AF%B9%E6%AF%94.html"
+            ],
+            "guid": [
+              "http://jser.me/2012/08/03/字符串转为json的几种方式对比"
+            ],
+            "pubDate": [
+              "Fri, 03 Aug 2012 00:00:00 -0700"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<p>前后端交互越来越常用的数据格式是json而非的xml，最常见的是直接eval，现在大部分浏览器已经内置JSON对象。</p>\n\n<p>常见的四种转换字符串为json格式的方式：</p>\n\n<ol>\n<li>eval （简单，不存在浏览器性能，有安全隐患）</li>\n<li>内建JSON.parse （有浏览器不支持）</li>\n<li>douglascrockford 的  <a href=\"https://github.com/douglascrockford/JSON-js\">json2.js</a>（安全上有一定的保证，浏览器支持2的时候使用2）</li>\n<li><a href=\"http://code.google.com/p/json-sans-eval/\">json-sans-eval.js</a>（特色是安全，速度不是很快）</li>\n</ol>\n\n<p>看<a href=\"/demos/1343968111710_testJson.html\">testJson.html</a>,数据是看新浪微博时随便找的一段，在各个浏览器中看了一下，100次的时候基本上都是内置的最快，1000次的时候eval快，这个很不解，另外发现了opera的速度是最快的，在我的电脑上100次只用了3ms，真NB呀。综合看来，使用json2.js挺不错的，当然，如果你的所有数据都是能保证安全的，直接用eval吧~</p>\n<br/>文章来源： <a href=\"http://jser.me/2012/08/03/%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E4%B8%BAjson%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F%E5%AF%B9%E6%AF%94.html\">字符串转为json的几种方式对比</a> <br/> 文章的标签：  <a href=\"http://jser.me/tag.html#javascript\" class=\"tag\">javascript</a>  <a href=\"http://jser.me/tag.html#Performance\" class=\"tag\">Performance</a>  <a href=\"http://jser.me/tag.html#json\" class=\"tag\">json</a>  <a href=\"http://jser.me/tag.html#json.parse\" class=\"tag\">json.parse</a> \n             "
+            ]
+          },
+          {
+            "title": [
+              "写给自已 "
+            ],
+            "link": [
+              "http://jser.me/2012/08/03/%E5%86%99%E7%BB%99%E8%87%AA%E5%B7%B2.html"
+            ],
+            "guid": [
+              "http://jser.me/2012/08/03/写给自已"
+            ],
+            "pubDate": [
+              "Fri, 03 Aug 2012 00:00:00 -0700"
+            ],
+            "author": [
+              "草依山"
+            ],
+            "description": [
+              "<p><em>2012.05.08</em></p>\n\n<ol>\n<li>不要因为眼前的小利益，忘记长远的发展</li>\n<li>多与朋友沟通</li>\n<li>走自已感兴趣并且与性格相符的路</li>\n<li>戒骄戒躁</li>\n<li>保持进取,不可荒度每一个小时</li>\n<li>该早起了，该早起了，该早起了</li>\n<li>早点睡吧，早点睡吧，早点睡吧</li>\n<li>不能成为大胖子，向着肌肉男的目标前进</li>\n<li>不管多么累，多么难受，多么苦，永远不能表现出来，微笑，微笑，微笑！！！</li>\n<li>每天睡前写一会日记，今天做了什么，给了别人什么帮助，能力提高了吗？有什么遗憾吗？</li>\n</ol>\n<br/>文章来源： <a href=\"http://jser.me/2012/08/03/%E5%86%99%E7%BB%99%E8%87%AA%E5%B7%B2.html\">写给自已</a> <br/> 文章的标签： \n             "
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

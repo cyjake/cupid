@@ -8,7 +8,7 @@ process.stdin.resume()
 
 cupid.build('alibaba')
   // .fail(function(err) { utils.error(err) })
-  .done(function(msg) {
-    utils.log('done', msg)
+  .done(function(data) {
+    utils.log('done', 'build ' + data.title + ' succeed')
     process.exit(0)
   })

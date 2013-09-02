@@ -7,10 +7,14 @@ An alternative of venus the feed aggregator.
 Builds planet alibaba by default for now. Need to change the code for other sites.
 
 ```bash
+$ git clone git@github.com:dotnil/cupid.git
+$ cd cupid
 $ npm install
-$ npm link cupid
+$ npm link
 $ cupid build
 ```
+
+Or simpliy
 
 ## Misnomer
 

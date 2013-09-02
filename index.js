@@ -44,12 +44,7 @@ exports.build = function(planet) {
 
       data.posts = exports.aggregate(feeds)
 
-      log('write', data.title + ' into index.html')
-      exports.write(data)
-
-      var fpath = path.join(__dirname, 'planet/' + planet + '/index.html')
-
-      if (fs.existsSync(fpath)) d.resolve('saved ' + fpath)
+      d.resolve(exports.write(data))
     })
     .fail(function(err) { d.reject(err) })
 
@@ -202,7 +197,7 @@ exports.normalize = function(feed) {
       var href = a.attr('href')
 
       if (!protocol.test(href)) {
-        a.attr('href', path.join(site, href).replace('/', '//'))
+        a.attr('href', href ? path.join(site, href).replace('/', '//') : site)
       }
     })
 
@@ -210,7 +205,11 @@ exports.normalize = function(feed) {
       img = $(img)
       var src = img.attr('src')
 
-      if (!protocol.test(src)) {
+      if (!src) {
+        log('remove', 'img with empty @src')
+        img.remove()
+      }
+      else if (!protocol.test(src)) {
         img.attr('src', path.join(site, src).replace('/', '//'))
       }
 
@@ -241,11 +240,19 @@ exports.aggregate = function(feeds) {
 
 exports.write = function(data) {
   data.pretty = true
+  data.updated = moment()
+  data.site = data.site.replace(/\/$/, '')
 
   var base = path.join(__dirname, 'planet/alibaba')
   var markup = jade.renderFile(base + '/index.jade', data)
 
+  log('write', 'index.html')
   fs.writeFileSync(base + '/index.html', markup)
+
+  log('write', 'atom.xml')
+  fs.writeFileSync(base + '/atom.xml', jade.renderFile(base + '/atom.jade', data))
+
+  return data
 }
 
 exports.User = User
