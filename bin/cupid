@@ -33,15 +33,21 @@ function alias(cmd) {
 
 var bin = 'cupid-' + alias(cmd)
 var local = path.join(__dirname, bin)
+var args = process.argv.slice(2)
 
-if (fs.existsSync(local)) bin = local
+if (fs.existsSync(local)) {
+  args = args.slice(1)
+  bin = local
+}
+else if (args[0] || fs.existsSync(path.join(process.cwd(), 'planet.json'))) {
+  bin = path.join(__dirname, 'cupid-build')
+}
 else {
   process.stdout.write(program.helpInformation());
   program.emit('--help');
   process.exit();
 }
 
-var args = process.argv.slice(3)
 var proc = spawn(bin, args, { stdio: 'inherit', customFds: [0, 1, 2] })
 
 proc.on('close', function(code){

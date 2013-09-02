@@ -9,6 +9,7 @@ var path = require('path')
 var moment = require('moment')
 var jade = require('jade')
 var log = require('./lib/utils').log
+var error = require('./lib/utils').error
 var User = require('./lib/user')
 
 
@@ -25,31 +26,6 @@ Object.defineProperties(Object.prototype, {
     writable: false
   }
 })
-
-exports.build = function(planet) {
-  var data = require('./planet/' + planet + '/planet.json')
-  var d = Q.defer()
-
-  exports.read(data.feeds)
-    .then(function(feeds) {
-      feeds = feeds.map(exports.unify).map(exports.normalize)
-
-      var props = 'author link site title subtitle updated'.split(' ')
-
-      feeds.forEach(function(feed, i) {
-        props.forEach(function(p) {
-          data.feeds[i][p] = feed[p]
-        })
-      })
-
-      data.posts = exports.aggregate(feeds)
-
-      d.resolve(exports.write(data))
-    })
-    .fail(function(err) { d.reject(err) })
-
-  return d.promise
-}
 
 exports.read = function(feeds) {
   var reqs = feeds.map(function(feed, i) {
@@ -71,8 +47,11 @@ exports.read = function(feeds) {
     // but atom feeds typically have content-type set to application/atom+xml
     // so let's just force buffer
     request.get(feed.link).buffer().end(function(err, res) {
-      if (err) return d.reject(err)
-      if (!res.text) return d.reject(new Error('Empty response when requesting ' + feed.link))
+      if (err) {
+        error('failed', err.message + ' on ' + feed.link)
+        d.reject(err)
+        return
+      }
 
       var parser = new Parser()
 
@@ -243,14 +222,11 @@ exports.write = function(data) {
   data.updated = moment()
   data.site = data.site.replace(/\/$/, '')
 
-  var base = path.join(__dirname, 'planet/alibaba')
-  var markup = jade.renderFile(base + '/index.jade', data)
-
   log('write', 'index.html')
-  fs.writeFileSync(base + '/index.html', markup)
+  fs.writeFileSync(data.dir + '/index.html', jade.renderFile(data.dir + '/index.jade', data))
 
   log('write', 'atom.xml')
-  fs.writeFileSync(base + '/atom.xml', jade.renderFile(base + '/atom.jade', data))
+  fs.writeFileSync(data.dir + '/atom.xml', jade.renderFile(data.dir + '/atom.jade', data))
 
   return data
 }

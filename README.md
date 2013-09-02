@@ -11,10 +11,23 @@ $ git clone git@github.com:dotnil/cupid.git
 $ cd cupid
 $ npm install
 $ npm link
-$ cupid build
+$ cupid alibaba
 ```
 
 Or simpliy
+
+```bash
+$ npm install cupid -g
+$ cupid :folder
+```
+
+The :folder argument that need to be supplied shall have these files:
+
+- index.jade
+- atom.jade
+- planet.json
+
+See files under `planet/alibaba` for example.
 
 ## Misnomer
 

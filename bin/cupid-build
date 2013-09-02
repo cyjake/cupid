@@ -1,14 +1,53 @@
 #!/usr/bin/env node
 
+var fs = require('fs')
+var path = require('path')
 var cupid = require('../')
-var utils = require('../lib/utils')
+var log = require('../lib/utils').log
+var error = require('../lib/utils').error
 
 
-process.stdin.resume()
+var args = process.argv.slice(2)
+var cwd = process.cwd()
+var planet = path.join(cwd, 'planet.json')
+var arg = args[0]
 
-cupid.build('alibaba')
-  // .fail(function(err) { utils.error(err) })
-  .done(function(data) {
-    utils.log('done', 'build ' + data.title + ' succeed')
+if (!arg) {
+  error('can not find planet.json file in current directory')
+  process.exit(1)
+}
+
+if (!fs.existsSync(planet)) {
+  planet = path.join(cwd, args[0], 'planet.json')
+}
+
+if (!fs.existsSync(planet)) {
+  planet = path.join(__dirname, '../planet', args[0], 'planet.json')
+}
+
+if (fs.existsSync(planet)) {
+  var data = require(planet)
+
+  cupid.read(data.feeds).done(function(feeds) {
+    var props = 'author link site title subtitle updated'.split(' ')
+
+    feeds = feeds.map(cupid.unify).map(cupid.normalize)
+
+    feeds.forEach(function(feed, i) {
+      props.forEach(function(p) {
+        data.feeds[i][p] = feed[p]
+      })
+    })
+
+    data.posts = cupid.aggregate(feeds)
+    data.dir = path.dirname(planet)
+
+    cupid.write(data)
+
+    log('done', 'build ' + data.title + ' succeed')
+    log('done', 'check the build result at ' + data.dir)
     process.exit(0)
   })
+
+  process.stdin.resume()
+}
