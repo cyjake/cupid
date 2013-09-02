@@ -12,22 +12,42 @@ $ cd cupid
 $ npm install
 $ npm link
 $ cupid alibaba
+$ cupid server alibaba
 ```
 
 Or simpliy
 
 ```bash
 $ npm install cupid -g
-$ cupid :folder
+$ cupid alibaba
+$ cupid alibaba
 ```
 
-The :folder argument that need to be supplied shall have these files:
+Or if you want to build your own:
+
+```bash
+$ cupid :folder
+$ cupid server :folder
+```
+
+The `:folder` argument that need to be supplied shall be a directory and have these
+files:
 
 - index.jade
 - atom.jade
 - planet.json
 
-See files under `planet/alibaba` for example.
+See files under `planet/alibaba` for example:
+
+```bash
+planet/alibaba
+├── atom.jade
+├── favicon.ico
+├── index.jade
+├── planet.css
+├── planet.json
+└── solarized-light.css
+```
 
 ## Misnomer
 
