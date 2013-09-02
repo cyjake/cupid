@@ -8,13 +8,27 @@ html(lang='en')
     link(rel="stylesheet", type="text/css", href="solarized-light.css")
   body
     nav
-      a(href='http://ux.etao.com') MUX
-      ul
-        for feed in feeds
-          li
-            a(href="#{feed.site}")
-              i.iconfont &#483;
-              | !{feed.title}
+      a.logo(href='http://ux.etao.com')
+        span.iconfont.at &#481;
+        span.iconfont &#482;
+      section
+        h3 Feeds
+        ul.feeds
+          for feed in feeds
+            li
+              a(href="#{feed.site}")
+                i.iconfont &#483;
+                | !{feed.title}
+      section
+        h3 Subscribe
+        a(href="atom.xml")
+          i.iconfont &#483;
+          | Atom
+      section
+        p Built #{updated.fromNow()}
+        p
+          | Powered by&nbsp;
+          a(href="https://github.com/dotnil/cupid") cupid
     div.main
       for post in posts
         section

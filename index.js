@@ -137,6 +137,10 @@ exports.unifyAtom = function(atom, feed) {
     })
   }
 
+  // http://feed.cnblogs.com/blog/u/102213/rss
+  // ziyunfei has its blog's link specified in author.uri
+  if (author.uri) site = author.uri
+
   var obj = {
     title: title,
     subtitle: atom.flat('subtitle'),
@@ -165,8 +169,17 @@ exports.unifyAtom = function(atom, feed) {
 exports.normalize = function(feed) {
   var protocol = /^https?:\/\//
   var site = feed.site
+  var author = feed.author
+
+  if (!author.site) author.site = feed.site
+  if (!author.name) author.name = feed.title
 
   feed.entry.forEach(function(entry) {
+    var author = entry.author
+
+    if (!author.site) author.site = feed.site
+    if (!author.name) author.name = feed.title
+
     var $ = cheerio.load(entry.content)
 
     log('normalize', entry.title + ' from ' + feed.title)

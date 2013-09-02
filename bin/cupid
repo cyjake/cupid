@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 var program = require('commander')
-var path = require('path')
-var fs = require('fs')
+var join = require('path').join
+var exists = require('fs').existsSync
 var spawn = require('child_process').spawn
 var pkg = require('../package.json')
 
@@ -32,15 +32,17 @@ function alias(cmd) {
 }
 
 var bin = 'cupid-' + alias(cmd)
-var local = path.join(__dirname, bin)
+var local = join(__dirname, bin)
 var args = process.argv.slice(2)
+var arg0 = args[0]
+var planet = require('../lib/planet')(arg0.charAt(0) !== '-' && arg0)
 
-if (fs.existsSync(local)) {
+if (exists(local)) {
   args = args.slice(1)
   bin = local
 }
-else if (args[0] || fs.existsSync(path.join(process.cwd(), 'planet.json'))) {
-  bin = path.join(__dirname, 'cupid-build')
+else if (planet) {
+  bin = join(__dirname, 'cupid-build')
 }
 else {
   process.stdout.write(program.helpInformation());

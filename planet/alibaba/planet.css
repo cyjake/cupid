@@ -1,3 +1,6 @@
+/*
+ * layout
+ */
 html, body {
   height: 100%;
 }
@@ -32,7 +35,9 @@ nav .logo {
 }
 
 
-/* type */
+/*
+ * type
+ */
 @font-face {
   font-family: 'uxiconfont';
   src: url('http://t.tbcdn.cn/apps/e/brix/fonts/uxiconfont.eot'); /* IE9*/
@@ -80,7 +85,7 @@ pre {
 pre code {
   display: block;
   padding: 5px 10px;
-  background: #ffc;
+  background: #fdf6e3;
   box-shadow: inset 0 0 7px rgba(0, 0, 0, 0.1);
   overflow: auto;
   font-size: 90%;
@@ -110,42 +115,75 @@ img {
   border-radius: 2px;
 }
 
-/* article */
-section {
+
+/*
+ * article
+ */
+.main section {
   margin-bottom: 40px;
 }
 
-.author {
+.main .author {
   border-bottom: 1px dashed #ccc;
   overflow: hidden;
 }
 
-.author img {
+.main .author img {
   float: left;
   margin: 0 10px 10px 0;
 }
 
-.author address {
+.main .author address {
   font-style: normal;
 }
 
-.author .name {
+.main .author .name {
   display: block;
   padding-top: 30px;
 }
 
-.author:hover {
+.main .author:hover {
   text-decoration: none;
 }
 
-article {
+.main article {
   max-width: 690px;
 }
 
-article:after {
+.main article:after {
   content: "❦";
   display: block;
   text-align: center;
   font-size: 36px;
   color: #d14;
+}
+
+
+/*
+ * aside
+ */
+.logo .iconfont {
+  font-size: 30px;
+  margin-right: 0;
+  line-height: 32px;
+  margin-right: -2px;
+  color: rgba(0, 0, 0, 0.66);
+  -webkit-transition: all 0.3s ease-out;
+     -moz-transition: all 0.3s ease-out;
+      -ms-transition: all 0.3s ease-out;
+       -o-transition: all 0.3s ease-out;
+          transition: all 0.3s ease-out;
+}
+
+.logo:hover {
+  text-decoration: none;
+}
+
+.logo:hover .at {
+  color: rgba(255, 80, 0, 0.66);
+}
+
+.feeds {
+  list-style: none;
+  padding-left: 0;
 }

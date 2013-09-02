@@ -1,0 +1,30 @@
+#!/usr/bin/env node
+
+var connect = require('connect')
+var exists = require('fs').existsSync
+var error = require('../lib/utils').error
+var log = require('../lib/utils').log
+var program = require('commander')
+
+var PORT = 3000
+
+program
+  .option('-p --port', 'Specify the port to listen on, default to ' + PORT)
+  .parse(process.argv)
+
+var args = process.argv.slice(2)
+var arg0 = args[0]
+var planet = require('../lib/planet')(arg0.charAt(0) !== '-' && arg0)
+var cwd = process.cwd()
+
+if (!exists(planet)) {
+  error('cannot find planet folder to serve')
+}
+
+var port = program.port || PORT
+var app = connect()
+  .use(connect.logger('dev'))
+  .use(connect.static(planet))
+  .listen(port)
+
+log('server', 'listening on ' + port)

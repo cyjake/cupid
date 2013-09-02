@@ -5,3 +5,4 @@ planet/**/*.html
 planet/**/*.xml
 
 *.log
+.DS_Store
