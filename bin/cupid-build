@@ -2,6 +2,7 @@
 
 var exists = require('fs').existsSync
 var join = require('path').join
+var resolve = require('path').resolve
 var cupid = require('../')
 var log = require('../lib/utils').log
 var error = require('../lib/utils').error
@@ -9,8 +10,7 @@ var error = require('../lib/utils').error
 
 var args = process.argv.slice(2)
 var dir = args.length > 0 ? args[0] : ''
-var cwd = process.cwd()
-var planet = join(cwd, dir)
+var planet = resolve(process.cwd(), dir)
 
 if (!exists(join(planet, 'planet.json'))) {
   error('cannot find planet folder to build')

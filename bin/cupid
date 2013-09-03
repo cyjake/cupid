@@ -37,7 +37,6 @@ var local = join(__dirname, bin)
 var args = process.argv.slice(3)
 
 if (exists(local)) {
-  args = args.slice(1)
   bin = local
 }
 else {

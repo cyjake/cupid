@@ -3,6 +3,7 @@
 var connect = require('connect')
 var exists = require('fs').existsSync
 var join = require('path').join
+var resolve = require('path').resolve
 var error = require('../lib/utils').error
 var log = require('../lib/utils').log
 var program = require('commander')
@@ -15,14 +16,13 @@ program
   .parse(process.argv)
 
 var dir = program.args[0] || ''
-var cwd = process.cwd()
+var planet = resolve(process.cwd(), dir)
 
-if (!exists(join(cwd, dir, 'planet.json'))) {
+if (!exists(join(planet, 'planet.json'))) {
   error('cannot find planet folder to serve')
   process.exit(1)
 }
 
-var planet = join(cwd, dir)
 var app = connect()
   .use(connect.logger('dev'))
   .use(connect.static(planet))
