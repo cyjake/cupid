@@ -21,7 +21,7 @@ files:
 - atom.jade
 - planet.json
 
-See files under [planet alibaba](https://github.com/dotnil/alibaba) for example:
+See files under [planet alibaba](https://github.com/dotnil/cupid-alibaba) for example:
 
 ```bash
 planet/alibaba
@@ -35,9 +35,9 @@ planet/alibaba
 
 ## Misnomer
 
-Cupid think itself as an alternative of venus the feed aggregator. The latter was
-quite popular. There are numerous sites use it for company/group feed aggregation.
-Such as:
+Cupid think itself as an alternative of [venus](http://www.intertwingly.net/code/venus/)
+the feed aggregator. The latter was quite popular. There are numerous sites use it
+for company/group feed aggregation. Such as:
 
 - Planet Mozilla
 - Planet GNOME
@@ -48,7 +48,7 @@ on Mac OS X systems. So here's this project. We use Node.js and NPM.
 
 Writing JavaScript is fun. Use morden tools like NPM is a bless. And JavaScript
 community have done quite a lot of work. Most of the modules required for developing
-an feed aggregator can be found in NPM registry.
+a feed aggregator can be found in NPM registry.
 
 But why the name, why Cupid?
 
