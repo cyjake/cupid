@@ -6,7 +6,8 @@ var exists = require('fs').existsSync
 var spawn = require('child_process').spawn
 var pkg = require('../package.json')
 
-program.version(pkg.version)
+program
+  .version(pkg.version)
 
 program.on('--help', function() {
   console.log('  Examples:')
@@ -33,16 +34,11 @@ function alias(cmd) {
 
 var bin = 'cupid-' + alias(cmd)
 var local = join(__dirname, bin)
-var args = process.argv.slice(2)
-var arg0 = args[0]
-var planet = require('../lib/planet')(arg0.charAt(0) !== '-' && arg0)
+var args = process.argv.slice(3)
 
 if (exists(local)) {
   args = args.slice(1)
   bin = local
-}
-else if (planet) {
-  bin = join(__dirname, 'cupid-build')
 }
 else {
   process.stdout.write(program.helpInformation());

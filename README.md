@@ -4,29 +4,13 @@ An alternative of venus the feed aggregator.
 
 ## Usage
 
-Builds planet alibaba by default for now. Need to change the code for other sites.
-
-```bash
-$ git clone git@github.com:dotnil/cupid.git
-$ cd cupid
-$ npm install
-$ npm link
-$ cupid alibaba
-$ cupid server alibaba
-```
-
-Or simpliy
-
-```bash
-$ npm install cupid -g
-$ cupid alibaba
-$ cupid server alibaba
-```
+See [planet alibaba](https://github.com/dotnil/cupid-alibaba) for example.
 
 Or if you want to build your own:
 
 ```bash
-$ cupid :folder
+$ sudo npm install cupid -g
+$ cupid build :folder
 $ cupid server :folder
 ```
 
@@ -37,7 +21,7 @@ files:
 - atom.jade
 - planet.json
 
-See files under `planet/alibaba` for example:
+See files under [planet alibaba](https://github.com/dotnil/alibaba) for example:
 
 ```bash
 planet/alibaba

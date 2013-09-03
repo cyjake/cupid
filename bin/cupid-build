@@ -1,23 +1,23 @@
 #!/usr/bin/env node
 
-var fs = require('fs')
-var path = require('path')
+var exists = require('fs').existsSync
+var join = require('path').join
 var cupid = require('../')
 var log = require('../lib/utils').log
 var error = require('../lib/utils').error
 
 
 var args = process.argv.slice(2)
-var arg0 = args[0]
-var planet = require('../lib/planet')(arg0.charAt(0) !== '-' && arg0)
+var dir = args.length > 0 ? args[0] : ''
+var cwd = process.cwd()
+var planet = join(cwd, dir)
 
-if (!planet) {
-  error('can not find planet.json file')
+if (!exists(join(planet, 'planet.json'))) {
+  error('cannot find planet folder to build')
   process.exit(1)
 }
 
-
-var data = require(planet + '/planet.json')
+var data = require(join(planet, 'planet.json'))
 
 cupid.read(data.feeds).done(function(feeds) {
   var props = 'author link site title subtitle updated'.split(' ')

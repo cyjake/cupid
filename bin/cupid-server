@@ -2,29 +2,30 @@
 
 var connect = require('connect')
 var exists = require('fs').existsSync
+var join = require('path').join
 var error = require('../lib/utils').error
 var log = require('../lib/utils').log
 var program = require('commander')
 
+
 var PORT = 3000
 
 program
-  .option('-p --port', 'Specify the port to listen on, default to ' + PORT)
+  .option('-p --port [port]', 'Specify the port to listen on, default to ' + PORT, parseInt, PORT)
   .parse(process.argv)
 
-var args = process.argv.slice(2)
-var arg0 = args[0]
-var planet = require('../lib/planet')(arg0.charAt(0) !== '-' && arg0)
+var dir = program.args[0] || ''
 var cwd = process.cwd()
 
-if (!exists(planet)) {
+if (!exists(join(cwd, dir, 'planet.json'))) {
   error('cannot find planet folder to serve')
+  process.exit(1)
 }
 
-var port = program.port || PORT
+var planet = join(cwd, dir)
 var app = connect()
   .use(connect.logger('dev'))
   .use(connect.static(planet))
-  .listen(port)
+  .listen(program.port)
 
-log('server', 'listening on ' + port)
+log('server', 'listening on ' + program.port)
