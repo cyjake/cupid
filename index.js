@@ -195,6 +195,7 @@ exports.normalize = function(feed) {
 
     $('style').remove()
     $('script').remove()
+    $('link').remove()
 
     entry.content = $.html()
   })
