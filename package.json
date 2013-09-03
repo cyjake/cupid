@@ -1,6 +1,6 @@
 {
   "name": "cupid",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "An alternative of venus the feed aggregator",
   "main": "index.js",
   "scripts": {

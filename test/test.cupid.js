@@ -122,6 +122,11 @@ describe('.normalize', function() {
       $(img).attr('src').should.match(/^http:\/\//)
     })
   })
+
+  it('should remove 3rd part assets', function() {
+    $('script').should.be.empty
+    $('style').should.be.empty
+  })
 })
 
 describe('.aggregate', function() {
