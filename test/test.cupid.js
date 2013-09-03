@@ -126,6 +126,7 @@ describe('.normalize', function() {
   it('should remove 3rd part assets', function() {
     $('script').should.be.empty
     $('style').should.be.empty
+    $('link').should.be.empty
   })
 })
 
