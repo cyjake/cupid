@@ -11,7 +11,7 @@ require('should')
 // for quicker test driven development, this test is comment out temperarily.
 
 describe('.read', function() {
-  var data = require('../planet/alibaba/planet.json')
+  var data = require('./alibaba/planet.json')
   var feeds
 
   before(function(done) {
@@ -157,6 +157,7 @@ describe('.write', function() {
     var data = {
       title: "Planet Cupid",
       site: "http://planet.alibaba-inc.com",
+      dir: path.join(__dirname, 'alibaba'),
       feeds: [{
         data: require('./fixtures/mozhi.json'),
         link: 'http://nuysoft.com/rss.xml',
@@ -176,8 +177,8 @@ describe('.write', function() {
     data.posts = cupid.aggregate(feeds)
     cupid.write(data)
 
-    htmlPath = path.join(__dirname, '../planet/alibaba/index.html')
-    atomPath = path.join(__dirname, '../planet/alibaba/atom.xml')
+    htmlPath = path.join(__dirname, './alibaba/index.html')
+    atomPath = path.join(__dirname, './alibaba/atom.xml')
   })
 
   it('should write down index.html', function() {

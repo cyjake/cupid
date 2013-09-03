@@ -3,6 +3,7 @@ var Parser = require('xml2js').Parser
 var Q = require('q')
 var fs = require('fs')
 var path = require('path')
+var url = require('url')
 var _ = require('underscore')
 var cheerio = require('cheerio')
 var path = require('path')
@@ -166,52 +167,68 @@ exports.unifyAtom = function(atom, feed) {
   return obj
 }
 
+
+/*
+ * make site and $ global, methods such as exports.normalizeImage and
+ * exports.normalizeAnchor will be simpler for this.
+ */
+var protocol = /^https?:\/\//
+var site
+var $
+
 exports.normalize = function(feed) {
-  var protocol = /^https?:\/\//
-  var site = feed.site
-  var author = feed.author
+  site = feed.site
+  author = feed.author
 
   if (!author.site) author.site = feed.site
   if (!author.name) author.name = feed.title
 
   feed.entry.forEach(function(entry) {
-    var author = entry.author
-
-    if (!author.site) author.site = feed.site
-    if (!author.name) author.name = feed.title
-
-    var $ = cheerio.load(entry.content)
-
     log('normalize', entry.title + ' from ' + feed.title)
 
-    $('a').each(function(i, a) {
-      a = $(a)
-      var href = a.attr('href')
+    exports.normalizeAuthor(entry, feed)
 
-      if (!protocol.test(href)) {
-        a.attr('href', href ? path.join(site, href).replace('/', '//') : site)
-      }
-    })
+    $ = cheerio.load(entry.content)
 
-    $('img').each(function(i, img) {
-      img = $(img)
-      var src = img.attr('src')
+    $('a').each(exports.normalizeAnchor)
+    $('img').each(exports.normalizeImage)
 
-      if (!src) {
-        log('remove', 'img with empty @src')
-        img.remove()
-      }
-      else if (!protocol.test(src)) {
-        img.attr('src', path.join(site, src).replace('/', '//'))
-      }
-
-      // console.log(img.attr('src'))
-    })
+    $('style').remove()
+    $('script').remove()
 
     entry.content = $.html()
   })
 
   return feed
+}
+
+exports.normalizeAuthor = function(entry, feed) {
+  var author = entry.author
+
+  if (!author.site) author.site = feed.site
+  if (!author.name) author.name = feed.title
+}
+
+exports.normalizeImage = function(i, img) {
+  img = $(img)
+  var src = img.attr('src')
+
+  if (!src) {
+    log('remove', 'img with empty @src')
+    img.remove()
+  }
+  else if (!protocol.test(src)) {
+    img.attr('src', url.resolve(site, src))
+  }
+}
+
+exports.normalizeAnchor = function(i, a) {
+  a = $(a)
+  var href = a.attr('href')
+
+  if (!protocol.test(href)) {
+    a.attr('href', href ? url.resolve(site, href) : site)
+  }
 }
 
 exports.aggregate = function(feeds) {
