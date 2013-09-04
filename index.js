@@ -154,12 +154,25 @@ exports.unifyAtom = function(atom, feed) {
   }
 
   obj.entry = atom.entry.map(function(entry) {
+    var link = entry.flat('link') || entry.flat('id')
+
+    // ziyunfei's fedd has entry.link in array, each object is like:
+    //
+    //     {
+    //       $: {
+    //         rel: 'alternative',
+    //         href: 'http://...'
+    //       }
+    //     }
+    //
+    if (_.isObject(link)) link = link.$.href
+
     return {
       title: entry.flat('title'),
       content: entry.flat('content'),
       updated: moment(entry.flat('updated')),
       id: entry.flat('id'),
-      link: entry.flat('link') || entry.flat('id'),
+      link: link,
       author: new User(entry.flat('author') || author)
     }
   })

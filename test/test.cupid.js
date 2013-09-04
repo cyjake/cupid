@@ -70,26 +70,33 @@ describe('.unifyAtom', function() {
 
   before(function() {
     feed = cupid.unify({
-      data: require('./fixtures/yicai.json'),
-      link: 'http://cyj.me/feed/atom.xml'
+      data: require('./fixtures/ketuo.json'),
+      link: 'http://feed.cnblogs.com/blog/u/102213/rss'
     })
   })
 
   it('should unify atom into simplified format', function() {
-    feed.title.should.equal('Everything Jake')
+    feed.title.should.equal('博客园_紫云飞')
   })
 
   it('should fabricate author', function() {
     var author = feed.author
 
     author.should.be.an.instanceOf(cupid.User)
-    author.name.should.equal('Jake Chen')
+    author.name.should.equal('紫云飞')
     author.email.should.be.empty
   })
 
   it('should fabricate updated date', function() {
     feed.updated.year().should.equal(2013)
     feed.entry[0].updated.year().should.equal(2013)
+  })
+
+  it('should flat link', function() {
+    var link = feed.entry[0].link
+
+    link.should.be.a('string')
+    link.should.match(/^http/)
   })
 
   it('should set site', function() {
