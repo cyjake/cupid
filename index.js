@@ -275,4 +275,27 @@ exports.write = function(data) {
   return data
 }
 
+
+// wrappers
+exports.build = function(data) {
+  return exports.read(data.feeds).then(function(feeds) {
+    var props = 'author link site title subtitle updated'.split(' ')
+
+    feeds = feeds.map(exports.unify).map(exports.normalize)
+
+    feeds.forEach(function(feed, i) {
+      props.forEach(function(p) {
+        data.feeds[i][p] = feed[p]
+      })
+    })
+
+    data.posts = exports.aggregate(feeds)
+
+    exports.write(data)
+
+    return data
+  })
+}
+
+
 exports.User = User

@@ -25,7 +25,7 @@
     "moment": "~2.1.0",
     "gravatar": "~1.0.6",
     "commander": "~2.0.0",
-    "connect": "~2.8.7"
+    "express": "~3.3.8"
   },
   "devDependencies": {
     "should": "~1.2.2",

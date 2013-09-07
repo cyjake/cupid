@@ -26,8 +26,9 @@ describe('.read', function() {
 
   it('should keep parsed xml object', function() {
     feeds.forEach(function(feed, i) {
-      var fpath = path.join(__dirname, 'fixtures', han.letter(feed.nickname) + '.json')
+      if (!feed.nickname) return
 
+      var fpath = path.join(__dirname, 'fixtures', han.letter(feed.nickname) + '.json')
       fs.writeFileSync(fpath, JSON.stringify(feed.data, null, '  '))
     })
   })

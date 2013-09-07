@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 
-var connect = require('connect')
+var express = require('express')
 var exists = require('fs').existsSync
 var join = require('path').join
 var resolve = require('path').resolve
 var error = require('../lib/utils').error
 var log = require('../lib/utils').log
 var program = require('commander')
+var fs = require('fs')
+var cupid = require('../')
 
 
 var PORT = 3000
@@ -23,9 +25,67 @@ if (!exists(join(planet, 'planet.json'))) {
   process.exit(1)
 }
 
-var app = connect()
-  .use(connect.logger('dev'))
-  .use(connect.static(planet))
-  .listen(program.port)
+
+var app = express()
+
+app.use(express.logger('dev'))
+app.use(express.static(planet))
+app.use(express.cookieParser())
+app.use(express.session({ secret: 'avada kedavra' }))
+app.use(express.bodyParser())
+
+app.set('view engine', 'jade')
+app.set('views', resolve(__dirname, '../views'))
+
+var ext = join(planet, 'cupid.js')
+
+if (exists(ext)) {
+  require(ext)(app)
+}
+
+app.get('/feeds/new', function(req, res) {
+  res.render('feed-new')
+})
+
+app.post('/feeds', function(req, res) {
+  var props = 'link author nickname'.split(' ')
+  var obj = {}
+
+  props.forEach(function(p) {
+    obj[p] = req.body[p]
+  })
+
+  if (!obj.link || !/^http:\/\//.test(obj.link)) {
+    return res.json(422, { message: 'invalid link' })
+  }
+
+  var planetPath = join(planet, 'planet.json')
+  var config = require(planetPath)
+  var feeds = config.feeds
+
+  for (var i = 0; i < feeds.length; i++) {
+    if (feeds[i].link === obj.link) {
+      return res.json(409, { message: 'added already'})
+    }
+  }
+
+  feeds.push(obj)
+  fs.writeFileSync(planetPath, JSON.stringify(config, null, '  '))
+
+  config.dir = planet
+  cupid.build(config).done(function(data) {
+    return res.json(201, { message: 'created' })
+  }, function(err) {
+    return res.json(500, { message: err.message })
+  })
+})
+
+app.get('/:asset/:name', function(req, res) {
+  var fpath = resolve(__dirname, '../public/', req.params.asset, req.params.name)
+
+  if (exists(fpath)) res.sendfile(fpath)
+})
+
+app.listen(program.port)
 
 log('server', 'listening on ' + program.port)

@@ -1,0 +1,23 @@
+doctype html5
+html
+  head
+    meta(charset="utf-8")
+    title Add Feed - Cupid
+    link(rel="stylesheet", type="text/css", href="http://g.tbcdn.cn/thx/cube/1.0.3/neat.css")
+    link(rel="stylesheet", type="text/css", href="/stylesheets/style.css")
+  body
+    div#page
+      div.aside
+        h1 Cupid
+      div.main
+        form(action="/feeds", method="post")
+          div.row
+            label URL
+            input.url(type="text", name="link")
+          div.row
+            label Author
+            input.author(type="text", name="author")
+          div.row.actions
+            button(type="submit") Submit
+    script(src="http://g.tbcdn.cn/kissy/k/1.3.1/seed.js")
+    script(src="/javascripts/feed-new.js")

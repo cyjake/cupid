@@ -19,22 +19,8 @@ if (!exists(join(planet, 'planet.json'))) {
 
 var data = require(join(planet, 'planet.json'))
 
-cupid.read(data.feeds).done(function(feeds) {
-  var props = 'author link site title subtitle updated'.split(' ')
-
-  feeds = feeds.map(cupid.unify).map(cupid.normalize)
-
-  feeds.forEach(function(feed, i) {
-    props.forEach(function(p) {
-      data.feeds[i][p] = feed[p]
-    })
-  })
-
-  data.posts = cupid.aggregate(feeds)
-  data.dir = planet
-
-  cupid.write(data)
-
+data.dir = planet
+cupid.build(data).done(function(data) {
   log('done', 'build ' + data.title + ' succeed')
   log('done', 'check the build result at ' + data.dir)
   process.exit(0)
