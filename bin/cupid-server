@@ -69,15 +69,22 @@ app.post('/feeds', function(req, res) {
     }
   }
 
-  feeds.push(obj)
-  fs.writeFileSync(planetPath, JSON.stringify(config, null, '  '))
-
-  config.dir = planet
-  cupid.build(config).done(function(data) {
-    return res.json(201, { message: 'created' })
-  }, function(err) {
-    return res.json(500, { message: err.message })
-  })
+  cupid.read([obj])
+    .then(function(result) {
+      feeds.push(result[0])
+      fs.writeFileSync(planetPath, JSON.stringify(config, null, '  '))
+    })
+    .then(function() {
+      config.dir = planet
+      return cupid.build(config)
+    })
+    .done(
+      function(data) {
+        return res.json(201, { message: 'created' })
+      }, function(err) {
+        return res.json(422, { message: err.message })
+      }
+    )
 })
 
 app.get('/:asset/:name', function(req, res) {
