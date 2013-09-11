@@ -53,7 +53,7 @@ a feed aggregator can be found in NPM registry.
 But why the name, why Cupid?
 
 Venus project named itself venus possibly because of planet venus, as we can tell
-from the names of those venus based sites. The rest names of planets in our solar
+from the names of those venus based sites. The names of the rest planets in our solar
 system are not as interesting though. Mars and Mercury are taken. Saturn and
 Jupiter might be available. Uranus and Neptune are not as famous. And no one shall
 name his project Earth. That'll make him godly, right?
