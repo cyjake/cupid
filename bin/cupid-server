@@ -44,7 +44,24 @@ if (exists(ext)) {
 }
 
 app.get('/feeds/new', function(req, res) {
-  res.render('feed-new')
+  var planetPath = join(planet, 'planet.json')
+  var config = require(planetPath)
+  var feeds = config.feeds
+  var user = req.session.user
+  var feed
+
+  for (var i = 0; i < feeds.length; i++) {
+    var author = feeds[i].author
+
+    if (author) {
+      author = new cupid.User(author)
+      if (author.email === user.email) feed = feeds[i]
+    }
+  }
+
+  res.render('feed-new', {
+    feed: feed
+  })
 })
 
 app.post('/feeds', function(req, res) {
@@ -71,7 +88,14 @@ app.post('/feeds', function(req, res) {
 
   cupid.read([obj])
     .then(function(result) {
-      feeds.push(result[0])
+      var feed = {}
+      var obj = result[0]
+      var props = 'link title author'.split(' ')
+
+      for (var p in obj) {
+        if (props.indexOf(p) >= 0) feed[p] = obj[p]
+      }
+      feeds.push(feed)
       fs.writeFileSync(planetPath, JSON.stringify(config, null, '  '))
     })
     .then(function() {

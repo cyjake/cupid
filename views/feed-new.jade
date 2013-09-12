@@ -13,7 +13,7 @@ html
         form(action="/feeds", method="post")
           div.row
             label URL
-            input.url(type="text", name="link")
+            input.url(type="text", name="link", value="#{feed.link}")
           div.row
             label Author
             input.author(type="text", name="author")
