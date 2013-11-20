@@ -43,10 +43,10 @@ for company/group feed aggregation. Such as:
 - Planet GNOME
 - etc.
 
-Venus project is kinda ancient. It requires Python 2.4, which won't be seen often
-on Mac OS X systems. So here's this project. We use Node.js and NPM.
+But venus project is kinda ancient. It requires Python 2.4, which won't be seen often
+on Mac OS X systems. We'd prefer Node.js and NPM. So here's this project.
 
-Writing JavaScript is fun. Use morden tools like NPM is a bless. And JavaScript
+Writing in JavaScript is fun. Use morden tools like NPM is a bless. And JavaScript
 community have done quite a lot of work. Most of the modules required for developing
 a feed aggregator can be found in NPM registry.
 
