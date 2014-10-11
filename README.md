@@ -4,34 +4,17 @@ An alternative of venus the feed aggregator.
 
 ## Usage
 
-See [planet alibaba](https://github.com/dotnil/cupid-alibaba) for example.
-
-Or if you want to build your own:
-
 ```bash
 $ sudo npm install cupid -g
 $ cupid build :folder
 $ cupid server :folder
 ```
 
-The `:folder` argument that need to be supplied shall be a directory and have these
-files:
+The provided `:folder` should be a directory that contain these files:
 
 - index.jade
 - atom.jade
 - planet.json
-
-See files under [planet alibaba](https://github.com/dotnil/cupid-alibaba) for example:
-
-```bash
-planet/alibaba
-├── atom.jade
-├── favicon.ico
-├── index.jade
-├── planet.css
-├── planet.json
-└── solarized-light.css
-```
 
 ## Misnomer
 
@@ -58,8 +41,5 @@ system are not as interesting though. Mars and Mercury are taken. Saturn and
 Jupiter might be available. Uranus and Neptune are not as famous. And no one shall
 name his project Earth. That'll make him godly, right?
 
-The point is, this project, as an alternative of veuns, won't have ambitions as
-big as venus. Both the codebase and mission are all quite smaller.
-
-We just want to serve [Planet Alibaba](http://planet.alibaba-inc.com) well. And
-make sure we are having fun while maintaining it.
+The point is, this project, as an alternative of venus, won't have any ambitions as
+big. Both the codebase and mission are all quite smaller.
