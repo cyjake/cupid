@@ -8,6 +8,8 @@ const program = require('commander')
 
 const Planet = require('../lib/planet')
 
+program.parse(process.argv)
+
 const cwd = process.cwd()
 const root = program.args.length
   ? path.resolve(cwd, program.args.shift())
