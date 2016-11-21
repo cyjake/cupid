@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <generator uri="{{ generator.uri }}" version="{{ generator.version }}">{{ generator.name }}</generator>
+  <link href="{{ link }}/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="{{ link }}" rel="alternate" type="text/html" />
+  <updated>{{ updated | date: '%Y-%m-%dT%H:%M:%S%z' }}</updated>
+  <id>{{ link }}</id>
+  <title type="html">{{ title | escape }}</title>
+  <subtitle>{{ description }}</subtitle>
+  {% for post in posts %}
+  <entry>
+    <title type="html">{{ post.title | escape }}</title>
+    <link href="{{ post.link }}" rel="alternate" type="text/html" title="{{ post.title | escape }}" />
+    <published>{{ post.published | date: '%Y-%m-%dT%H:%M:%S%z' }}</published>
+    <id>{{ post.link }}</id>
+    <author>
+      <name>{{ post.author.name | escape }}</name>
+      <uri>{{ post.author.uri }}</uri>
+    </author>
+    <content type="html" xml:base="{{ post.uri }}">{{ post.content | escape }}</content>
+  </entry>
+  {% endfor %}
+</feed>

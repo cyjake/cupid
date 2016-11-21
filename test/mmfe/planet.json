@@ -1,0 +1,11 @@
+{
+  "title": "Alimama FE",
+  "uri": "http://fe.alimama.net",
+  "feeds": [
+    { "author": { "name": "李牧" },
+      "uri": "http://limu.iteye.com/rss" },
+    { "uri": "http://jser.me/rss" },
+    { "uri": "http://feed.cnblogs.com/blog/u/102213/rss" },
+    { "uri": "http://cyj.me/feed/atom.xml" }
+  ]
+}

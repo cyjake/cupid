@@ -1,3 +1,0 @@
-[submodule "test/alibaba"]
-	path = test/alibaba
-	url = git@github.com:dotnil/cupid-alibaba.git
