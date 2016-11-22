@@ -9,15 +9,18 @@ const program = require('commander')
 const Planet = require('../lib/planet')
 
 program
-  .option('-d, --destination [dir]', 'Destination directory (defaults to ./target)', 'target')
   .option('-c, --count [count]', 'Posts count', 50)
+  .option('-d, --destination [dir]', 'Destination directory (defaults to ./target)', 'target')
+  .option('-t, --timeout [milliseconds]', 'Request timeout on feed', 10000)
 
 program.on('--help', function() {
   console.log(`
   Examples:
 
   $ cupid-build
+  $ cupid-build -c 20
   $ cupid-build some-planet -d /path/to/webroot
+  $ cupid-build --timeout 5000
 `.trim())
 })
 
@@ -32,7 +35,10 @@ const root = program.args.length
 co(function* () {
   const planet = new Planet(root)
 
-  yield planet.parse({ count: program.count })
+  yield planet.parse({
+    count: program.count,
+    timeout: program.timeout
+  })
   yield planet.write(program.destination)
 })
   .catch(function(err) {
