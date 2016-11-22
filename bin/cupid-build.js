@@ -10,6 +10,7 @@ const Planet = require('../lib/planet')
 
 program
   .option('-d, --destination [dir]', 'Destination directory (defaults to ./target)', 'target')
+  .option('-c, --count [count]', 'Posts count', 50)
 
 program.on('--help', function() {
   console.log(`
@@ -31,7 +32,7 @@ const root = program.args.length
 co(function* () {
   const planet = new Planet(root)
 
-  yield planet.parse()
+  yield planet.parse({ count: program.count })
   yield planet.write(program.destination)
 })
   .catch(function(err) {
