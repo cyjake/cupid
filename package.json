@@ -1,6 +1,6 @@
 {
   "name": "cupid",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "An alternative of venus the feed aggregator",
   "url": "https://github.com/dotnil/cupid",
   "main": "index.js",
@@ -17,11 +17,12 @@
     "url": "https://github.com/dotnil/cupid/issues"
   },
   "dependencies": {
-    "cheerio": "^0.12.4",
+    "cheerio": "^0.22.0",
     "co": "^4.6.0",
     "commander": "~2.0.0",
     "debug": "^2.3.3",
     "liquid-node": "^2.6.1",
+    "mkdirp": "^0.5.1",
     "superagent": "^2.3.0",
     "xml2js": "~0.2.8"
   },

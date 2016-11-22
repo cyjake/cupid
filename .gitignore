@@ -1,8 +1,6 @@
-*.sublime-workspace
 node_modules
+test/mmfe/target
 
-planet/**/*.html
-planet/**/*.xml
-
+*.sublime-*
 *.log
 .DS_Store
