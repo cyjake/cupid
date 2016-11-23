@@ -7,5 +7,6 @@ A complete rewritten of the original cupid@0.1, which features:
  * New: use `DEBUG=cupid` to toggle log behaviours
  * New: use liquid-node as the default templating engine
  * New: a src/target structure for better planet source and target management
+ * New: use feed.postSelector option to fetch full articles of the feed
  * Refactor: a much cleaner planet.json
  * Refactor: a much more robust and faster `cupid-build`
