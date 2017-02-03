@@ -1,6 +1,6 @@
 {
   "name": "cupid",
-  "version": "1.0.0-alpha.7",
+  "version": "1.0.0-beta",
   "description": "An alternative of venus the feed aggregator",
   "url": "https://github.com/dotnil/cupid",
   "main": "index.js",

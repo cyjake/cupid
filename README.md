@@ -13,9 +13,9 @@ $ cat > planet.json <<EOF
   ]
 }
 EOF
-$ mkdir views
-$ touch views/index.html
-$ touch views/feed.xml
+$ mkdir src
+$ touch src/index.html
+$ touch src/feed.xml
 $ cupid build               # will render views/{index.html,feed.xml} into cwd.
 $ DEBUG=cupid cupid build   # enable debugging logs
 ```
@@ -37,6 +37,28 @@ $ cupid-build --help
 
 ### -c, --count
 
+The maximum number of articles per feed.
+
+
+### -C, --copy
+
+Build in copy mode. In this mode, `.html` and `.xml` files are skipped while
+renderring the site. Only the static files will be copied into destination
+folder.
+
+```bash
+➜  planet git:(master) DEBUG=cupid cupid build -C
+  cupid writing to /tmp/planet/target +0ms
+  cupid wrote app.css +6ms
+  cupid wrote app.js +3ms
+```
+
+
 ### -d, --destination
 
+The destination folder of the build result, which defaults to `./target`.
+
+
 ### -t, --timeout
+
+The timeout on fetching and parsing combined per feed.
